@@ -41,7 +41,7 @@ public:
 	{
         Session session = context.session;
 		string title;
-		guint32 leftVol, rightVol, pos, rate, freq, nch, t, i;
+		gint32 leftVol, rightVol, pos, rate, freq, nch, t, i;
 #if HAVE_XMMS_REMOTE_GET_EQ
 		float preamp;
         vector<float> bands;

@@ -8,6 +8,8 @@
 #include <vector>
 #if HAVE_XMMS_SESSION_CONNECT
 #include <xmmssess.h>
+#else
+#include <xmmsctrl.h>
 #endif
 
 using namespace std;
@@ -25,11 +27,11 @@ private:
     XMMSSession *xs;
     guint32 version;
     Session::PlayMode mode;
-    guint32 rate;
-    guint32 freq;
-    guint32 nch;
-    guint32 left_volume;
-    guint32 right_volume;
+    gint32 rate;
+    gint32 freq;
+    gint32 nch;
+    gint32 left_volume;
+    gint32 right_volume;
     gint32 balance;
     gboolean repeat;
     gboolean shuffle;
@@ -40,7 +42,7 @@ private:
     void update_state(void);
 
 #endif
-    int sid;
+    gint32 sid;
 
 public:
     Session(int id = 0);
@@ -49,7 +51,7 @@ public:
 
     Playlist get_playlist(void) const;
     Window get_window(void) const;
-    guint32 get_id(void) const;
+    gint32 get_id(void) const;
     void ensure_running(void) const;
     gboolean is_running(void) const;
     guint32 get_version(void);
@@ -61,11 +63,11 @@ public:
     void unpause(void);
     Session::PlayMode pause_toggle(void);
     Session::PlayMode get_play_mode(void);
-    void get_playback_info(guint32& rate, guint32& freq, guint32& nch);
-    guint32 get_playback_time(void);
-    void jump_to_time(guint32 t);
-    void get_volume(guint32& left, guint32& right);
-    void set_volume(guint32 left, guint32 right);
+    void get_playback_info(gint32& rate, gint32& freq, gint32& nch);
+    gint32 get_playback_time(void);
+    void jump_to_time(gint32 t);
+    void get_volume(gint32& left, gint32& right);
+    void set_volume(gint32 left, gint32 right);
     gint32 get_balance(void);
     void set_balance(gint32 value);
 #if HAVE_XMMS_REMOTE_IS_REPEAT || HAVE_XMMS_SESSION_CONNECT
@@ -86,11 +88,11 @@ public:
 #if HAVE_XMMS_REMOTE_GET_EQ || HAVE_XMMS_SESSION_CONNECT
     void get_eq(float& preamp, vector<float>& bands);
     float get_eq_preamp(void);
-    float get_eq_band(guint32 band);
+    float get_eq_band(gint32 band);
     const vector<float>& get_eq_bands(void);
     void set_eq_preamp(float value);
     void set_eq_bands(const vector<float>& bands);
-    void set_eq_band(guint32 band, float value);
+    void set_eq_band(gint32 band, float value);
 #endif
     void quit(void);
 };

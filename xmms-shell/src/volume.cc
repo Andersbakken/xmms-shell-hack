@@ -18,7 +18,7 @@ public:
         Session session = context.session;
 		bool setv = false;
 		int chan = 0;
-		guint32 lv, rv, v;
+		gint32 lv, rv, v;
 
         session.get_volume(lv, rv);
 		v = (lv + rv) / 2;
@@ -111,7 +111,7 @@ public:
 	virtual void execute(CommandContext &cnx) const
 	{
         Session session = cnx.session;
-		guint32 lv, rv, v = 2, chan = 0;
+		gint32 lv, rv, v = 2, chan = 0;
 
         session.get_volume(lv, rv);
 		if(cnx.args.size() > 1) {

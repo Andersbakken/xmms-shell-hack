@@ -105,7 +105,7 @@ void Session::ensure_running(void) const
     }
 }
 
-guint32 Session::get_id(void) const
+gint32 Session::get_id(void) const
 {
     return sid;
 }
@@ -215,7 +215,7 @@ Session::PlayMode Session::pause_toggle(void)
     return mode;
 #else
     xmms_remote_pause(sid);
-    return is_paused();
+    return get_play_mode();
 #endif
 }
 
@@ -246,7 +246,7 @@ Session::PlayMode Session::get_play_mode(void)
 #endif
 }
 
-void Session::get_playback_info(guint32& rate, guint32& freq, guint32 &nch)
+void Session::get_playback_info(gint32& rate, gint32& freq, gint32 &nch)
 {
 #if SESSION
     rate = this->rate;
@@ -258,7 +258,7 @@ void Session::get_playback_info(guint32& rate, guint32& freq, guint32 &nch)
 #endif
 }
 
-void Session::jump_to_time(guint32 t)
+void Session::jump_to_time(gint32 t)
 {
 #if SESSION
     xmms_session_jump_to_time(xs, t);
@@ -268,12 +268,12 @@ void Session::jump_to_time(guint32 t)
 #endif
 }
 
-guint32 Session::get_playback_time(void)
+gint32 Session::get_playback_time(void)
 {
     ensure_running();
 #if SESSION
     XMMSQueryResult xqr;
-    guint32 t;
+    gint32 t;
 
     if((xqr = xmms_session_get_output_time(xs, &t)) != QUERY_SUCCESS) {
         throw new XmmsQueryFailureException(xqr, __FILE__, __LINE__);
@@ -284,7 +284,7 @@ guint32 Session::get_playback_time(void)
 #endif
 }
 
-void Session::get_volume(guint32& left, guint32& right)
+void Session::get_volume(gint32& left, gint32& right)
 {
 #if SESSION
     XMMSQueryResult xqr;
@@ -300,7 +300,7 @@ void Session::get_volume(guint32& left, guint32& right)
 #endif
 }
 
-void Session::set_volume(guint32 left, guint32 right)
+void Session::set_volume(gint32 left, gint32 right)
 {
     ensure_running();
 #if SESSION
@@ -373,7 +373,7 @@ gboolean Session::repeat_toggle(void)
 #else
     ensure_running();
     xmms_remote_toggle_repeat(sid);
-    return repeat();
+    return is_repeat();
 #endif
 }
 
@@ -411,7 +411,7 @@ void Session::set_shuffle(gboolean value)
     xmms_session_set_shuffle_status(xs, value);
     shuffle = value;
 #else
-    gboolean v = shuffle();
+    gboolean v = is_shuffle();
 
     if(v != value) {
         shuffle_toggle();
@@ -427,7 +427,7 @@ gboolean Session::shuffle_toggle(void)
 #else
     ensure_running();
     xmms_remote_toggle_shuffle(sid);
-    return shuffle();
+    return is_shuffle();
 #endif
 }
 
@@ -506,7 +506,7 @@ float Session::get_eq_preamp(void)
 #endif
 }
 
-float Session::get_eq_band(guint32 band)
+float Session::get_eq_band(gint32 band)
 {
 #if SESSION
     XMMSQueryResult xqr;
@@ -534,7 +534,7 @@ void Session::set_eq_preamp(float value)
 #endif
 }
 
-void Session::set_eq_band(guint32 band, float value)
+void Session::set_eq_band(gint32 band, float value)
 {
     ensure_running();
 #if SESSION

@@ -91,8 +91,8 @@ InteractiveContext::~InteractiveContext()
 
 InteractiveContext::PromptFormatter::PromptFormatter(Session& session)
 {
-    guint32 rate, freq, nch;
-    guint32 l, r;
+    gint32 rate, freq, nch;
+    gint32 l, r;
 
     associate('X', "XMMS-Shell");
     associate('x', "xmms-shell");
@@ -125,9 +125,11 @@ InteractiveContext::PromptFormatter::PromptFormatter(Session& session)
         Playlist playlist = session.get_playlist();
 
         associate('i', int_to_string(playlist.position()));
-        associate('F', playlist.current_filename());
-        associate('S', playlist.current_title());
         associate('N', int_to_string(playlist.length()));
+        if(playlist.length()) {
+            associate('F', playlist.current_filename());
+            associate('S', playlist.current_title());
+        }
     } else {
         associate('R', "not running");
     }

@@ -58,8 +58,8 @@ public:
 	{
         Session session = cnx.session;
         Playlist playlist = session.get_playlist();
-		guint32 target = 0, step = 1, delay = 100000, channel = 2, pos;
-		guint32 lv, rv, olv, orv, v;
+		gint32 target = 0, step = 1, delay = 100000, channel = 2, pos;
+		gint32 lv, rv, olv, orv, v;
 		int x = 1, mult;
 	
         if(!session.is_playing()) {
