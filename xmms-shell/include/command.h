@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+using namespace std;
+
 #define COMFLAG_INTERACTIVE	0x1
 
 #define COMERR_NOEFFECT	123

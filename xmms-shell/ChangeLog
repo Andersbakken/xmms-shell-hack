@@ -1,5 +1,16 @@
+Sat Oct 19 19:49:09 UTC 2002  Logan Hanks  <logan@vt.edu>
+
+  * Added in long-awaited changes to make xmms-shell compile under g++ 3
+    (patches from several sources)
+  * Titles of tracks displayed by LIST are now aligned, and the current
+    track is now marked (request #514146)
+  * RANDOMTRACK renamed to RANDOM-TRACK (alias to RANDOMTRACK also added)
+  * Added CURRENT-TRACK command (request #514146)
+  * Added REMOVE command (request #514146)
+
 Thu Oct 17 19:30:49 UTC 2002  Logan Hanks  <logan@vt.edu>
 
+  * Released as 0.99.1
   * WINDOW SHOW now has the correct behavior (closes bug #583730)
   * FADE now advances to next track (closes Debian bug #120161)
 

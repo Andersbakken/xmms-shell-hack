@@ -2,6 +2,7 @@
 #include <xmmsctrl.h>
 #include <map>
 #include <set>
+#include <cctype>
 #include "config.h"
 #include "command.h"
 #include "output.h"
@@ -248,8 +249,8 @@ public:
 				for(map<string, const Command *>::const_iterator it2 = (*it).second.begin(); it2 != (*it).second.end(); it2++) {
 					name = (*it2).first;
 					com = (*it2).second;
-					printf("  %-11.11s -", name.c_str());
-					output_indented(com->get_synopsis().c_str(), 20, 16, 76, stdout);
+					printf("  %-16.16s -", name.c_str());
+					output_indented(com->get_synopsis().c_str(), 25, 21, 76, stdout);
 					printf("\n");
 				}
 			}

@@ -161,7 +161,7 @@ static char * bash_dequote_filename (char *text, int quote_char)
 	return ret;
 }
 
-char **command_completion(char *text, int start, int end)
+char **command_completion(const char *text, int start, int end)
 {
 	int index;
 	char **argv;
@@ -243,7 +243,7 @@ gchar *getline(char *prompt)
 static void getline_rl_init(void)
 {
 	rl_readline_name = "XMMS-Shell";
-	rl_attempted_completion_function = (CPPFunction *)command_completion;
+	rl_attempted_completion_function = /*(CPPFunction *)*/command_completion;
 	rl_filename_completion_desired = 1;
 	rl_filename_quoting_desired = 1;
 	rl_completer_word_break_characters = " \t\n\"'";

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
+#include <cctype>
 #include <xmmsctrl.h>
 #include "command.h"
 

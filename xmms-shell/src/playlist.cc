@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
+#include <cctype>
 #include <xmmsctrl.h>
 #include "config.h"
 #include "command.h"
@@ -207,7 +208,7 @@ public:
 	virtual void execute(CommandContext &cnx) const
 	{
 		gchar **playlist;
-		int start = 0, stop = -1, len, x = 1;
+		int start = 0, stop = -1, len, x = 1, digs, pos;
 		gboolean filenames = FALSE;
 
 		if(cnx.args.size() > 1 && !strncasecmp("filenames", cnx.args[1].c_str(), cnx.args[1].length())) {
@@ -232,9 +233,11 @@ public:
 			playlist = get_playlist_filenames(cnx.session_id, &len);
 		else
 			playlist = get_playlist_titles(cnx.session_id, &len);
+        pos = xmms_remote_get_playlist_pos(cnx.session_id);
+        for(int i = digs = 1; i < len; i *= 10, digs++);
 		if(playlist) {
 			for(int i = start; i < len && (stop == -1 || i <= stop); i++)
-				printf("%d. %s\n", i + 1, playlist[i]);
+				printf("%c%*d. %s\n", pos == i ? '*' : ' ', digs, i + 1, playlist[i]);
 			g_strfreev(playlist);
 		} else
 			printf("Playlist is empty\n");
@@ -334,7 +337,10 @@ public:
 class RandomTrackCommand : public Command
 {
 public:
-	COM_STRUCT(RandomTrackCommand, "randomtrack")
+    RandomTrackCommand() : Command("random-track")
+    {
+        add_alias("randomtrack");
+    }
 	
 	virtual void execute(CommandContext &cnx) const
 	{
@@ -359,14 +365,91 @@ public:
 	}
 
 	COM_SYNOPSIS("jump to random track")
-	COM_SYNTAX("RANDOMTRACK")
+	COM_SYNTAX("RANDOM-TRACK")
 	COM_DESCRIPTION(
-		"The RANDOMTRACK command causes XMMS to jump to a random track in the playlist.  "
+		"The RANDOM-TRACK command causes XMMS to jump to a random track in the playlist.  "
 		"Its effect is the same as the JUMP command.  If the playlist contains fewer than "
 		"two entries, this command has no effect."
 	)
 	COM_RETURN("Always 0")
 	SECTION
+};
+
+class CurrentTrackCommand : public Command
+{
+public:
+    CurrentTrackCommand() : Command("current-track")
+    {
+        add_alias("currenttrack");
+    }
+
+    virtual void execute(CommandContext &cnx) const
+    {
+        int pos = xmms_remote_get_playlist_pos(cnx.session_id);
+        char *title = xmms_remote_get_playlist_title(cnx.session_id, pos);
+
+		printf("Current song: %d. %s\n", pos + 1, title ? title : "<no track selected>");
+        cnx.result_code = pos + 1;
+    }
+
+    COM_SYNOPSIS("display current track")
+    COM_SYNTAX("CURRENT-TRACK")
+    COM_DESCRIPTION(
+        "The CURRENT-TRACK command displays the name of the current track and "
+        "its current position in the playlist."
+    )
+    COM_RETURN("The position of the current track (counting from 1)")
+    SECTION
+};
+
+class RemoveCommand : public Command
+{
+public:
+    RemoveCommand() : Command("remove") { }
+
+    virtual void execute(CommandContext &cnx) const
+    {
+        int len, pos, pos2;
+
+        len = xmms_remote_get_playlist_length(cnx.session_id);
+		if(cnx.args.size() < 2 || !isdigit(cnx.args[1][0])) {
+			cnx.result_code = COMERR_SYNTAX;
+			return;
+		}
+		pos = atoi(cnx.args[1].c_str());
+		if(pos < 1 || pos > len) {
+			fprintf(stderr, "Invalid position %d.  Valid positions are >= 1 and <= %d.\n", pos, len);
+			cnx.result_code = COMERR_SYNTAX;
+        }
+        if(cnx.args.size() > 2 && isdigit(cnx.args[2][0])) {
+            pos2 = atoi(cnx.args[2].c_str());
+            if(pos2 < pos || pos2 > len) {
+			    fprintf(stderr, "Invalid position %d.  Valid positions for the second argument "
+                                "are >= %d and <= %d.\n", pos2, pos, len);
+                cnx.result_code = COMERR_SYNTAX;
+                return;
+            }
+        } else {
+            pos2 = pos;
+        }
+        while(pos2 >= pos) {
+            xmms_remote_playlist_delete(cnx.session_id, --pos2);
+        }
+        cnx.result_code = len - xmms_remote_get_playlist_length(cnx.session_id);
+    }
+
+    COM_SYNOPSIS("remove track(s) from the playlist")
+    COM_SYNTAX("REMOVE pos [pos2]")
+    COM_DESCRIPTION(
+        "The REMOVE command removes a track or range of tracks from the playlist.  "
+        "The first parameter given specifies the position of the first track to "
+        "remove.  If no second parameter is given, only the track at the given "
+        "position is removed.  If the second parameter is given, and pos2 >= pos1, "
+        "then all tracks with positions between pos and pos2 inclusive are removed "
+        "from the playlist."
+    )
+    COM_RETURN("The number of tracks removed from the playlist")
+    SECTION
 };
 
 static Command *commands[] = {
@@ -378,6 +461,8 @@ static Command *commands[] = {
 	new LoadCommand(),
 	new SaveCommand(),
 	new RandomTrackCommand(),
+    new CurrentTrackCommand(),
+    new RemoveCommand(),
 };
 
 void playlist_init(void)

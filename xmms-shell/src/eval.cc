@@ -2,6 +2,7 @@
 #include "eval.h"
 #include "command.h"
 #include <stdio.h>
+#include <cctype>
 
 static string dequote(const string &line, string::const_iterator &p, bool &completed)
 {
