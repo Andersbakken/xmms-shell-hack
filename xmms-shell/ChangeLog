@@ -1,3 +1,8 @@
+Thu Oct 17 19:30:49 UTC 2002  Logan Hanks  <logan@vt.edu>
+
+  * WINDOW SHOW now has the correct behavior (closes bug #583730)
+  * FADE now advances to next track (closes Debian bug #120161)
+
 Tue Feb 12 01:30:18 UTC 2002  Logan Hanks  <logan@vt.edu>
 
   * Fixed a typo that caused downvolume to be the same as upvolume (copy and

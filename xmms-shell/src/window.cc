@@ -53,7 +53,7 @@ public:
 				status &= ~apply;
 				break;
 			case 1:
-				status |= ~apply;
+				status |= apply;
 				break;
 			case 2:
 				status ^= ~(status & ~apply) | apply;

@@ -133,6 +133,7 @@ public:
 				xmms_remote_set_volume(cnx.session_id, lv, rv);
 				usleep(delay);
 			}
+        xmms_remote_playlist_next(cnx.session_id);
 		xmms_remote_set_volume(cnx.session_id, olv, orv);
 	}
 
