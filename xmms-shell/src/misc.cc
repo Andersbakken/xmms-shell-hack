@@ -14,22 +14,27 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-		gint pos, offset;
-		gboolean paused;
+        Session session = cnx.session;
+        Playlist playlist = session.playlist();
+		int pos, offset;
+		bool paused;
 
 		cnx.result_code = 0;
-		if(!xmms_remote_is_playing(cnx.session_id))
+        if(!session.playing()) {
 			return;
+        }
 
-		paused = xmms_remote_is_paused(cnx.session_id);
-		pos = xmms_remote_get_playlist_pos(cnx.session_id);
-		offset = xmms_remote_get_output_time(cnx.session_id);
-		xmms_remote_stop(cnx.session_id);
-		xmms_remote_set_playlist_pos(cnx.session_id, pos);
-		xmms_remote_play(cnx.session_id);
-		xmms_remote_jump_to_time(cnx.session_id, offset);
-		if(paused)
-			xmms_remote_pause(cnx.session_id);
+		paused = session.paused();
+        pos = playlist.position();
+        offset = session.playback_time();
+
+        session.stop();
+        playlist.set_position(pos);
+        session.play();
+        session.jump_to_time(offset);
+        if(paused) {
+            session.pause();
+        }
 	}
 
 	COM_SYNOPSIS("force XMMS to reset the output device")
@@ -51,16 +56,18 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
+        Session session = cnx.session;
+        Playlist playlist = session.playlist();
 		gint target = 0, step = 1, delay = 100000, channel = 2, pos;
 		gint lv, rv, olv, orv, v;
-		int x = 1;
+		int x = 1, mult;
 	
-		if(!xmms_remote_is_playing(cnx.session_id)) {
+        if(session.playing()) {
 			fprintf(stderr, "No song is playing, ignoring fade request\n");
 			cnx.result_code = 0;
 			return;
 		}
-		if(xmms_remote_is_paused(cnx.session_id)) {
+        if(session.paused()) {
 			fprintf(stderr, "Song is paused, ignoring fade request\n");
 			cnx.result_code = 0;
 			return;
@@ -77,8 +84,8 @@ public:
 			}
 		}
 	
-		pos = xmms_remote_get_playlist_pos(cnx.session_id);
-		xmms_remote_get_volume(cnx.session_id, &lv, &rv);
+        pos = playlist.position();
+        session.volume(lv, rv);
 	
 		if(lv > rv)
 			v = lv;
@@ -114,28 +121,24 @@ public:
 				}
 			}
 		}
-		if(v > target)
-			while(v > target && xmms_remote_get_playlist_pos(cnx.session_id) == pos) {
-				v -= step;
-				if(channel != 1)
-					lv -= step;
-				if(channel != 0)
-					rv -= step;
-				xmms_remote_set_volume(cnx.session_id, lv, rv);
-				usleep(delay);
-			}
-		else
-			while(v < target && xmms_remote_get_playlist_pos(cnx.session_id) == pos) {
-				v += step;
-				if(channel != 1)
-					lv += step;
-				if(channel != 0)
-					rv += step;
-				xmms_remote_set_volume(cnx.session_id, lv, rv);
-				usleep(delay);
-			}
-        xmms_remote_playlist_next(cnx.session_id);
-		xmms_remote_set_volume(cnx.session_id, olv, orv);
+		if(v > target) {
+            mult = -1;
+        } else {
+            mult = 1;
+        }
+        while((mult == 1 ? v < target : v > target) && playlist.position() == pos) {
+            v += mult * step;
+            if(channel != 1) {
+                lv += mult * step;
+            }
+            if(channel != 0) {
+                rv += mult * step;
+            }
+            session.set_volume(lv, rv);
+            usleep(delay);
+        }
+        playlist.next();
+        session.set_volume(olv, orv);
 	}
 
 	COM_SYNOPSIS("adjust volume to specified level over time")

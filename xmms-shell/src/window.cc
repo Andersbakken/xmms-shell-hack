@@ -2,6 +2,7 @@
 #include <xmmsctrl.h>
 #include "config.h"
 #include "command.h"
+#include "window.h"
 
 #define SECTION virtual const string get_section(void) const { return "Window Control"; }
 
@@ -12,6 +13,7 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
+        Window window = cnx.session.window();
 		int apply, status, command;
 
 		if(cnx.args.size() < 3)  {
@@ -43,9 +45,9 @@ public:
 			return;
 		}
 		
-		status = xmms_remote_is_eq_win(cnx.session_id) |
-			(xmms_remote_is_main_win(cnx.session_id) << 1) |
-			(xmms_remote_is_pl_win(cnx.session_id) << 2);
+        status = window.equalizer() |
+            (window.main() << 1) |
+            (window.playlist() << 2);
 
 		switch(command)
 		{
@@ -60,9 +62,9 @@ public:
 				break;
 		}
 
-		xmms_remote_eq_win_toggle(cnx.session_id, status & 1);
-		xmms_remote_main_win_toggle(cnx.session_id, (status >> 1) & 1);
-		xmms_remote_pl_win_toggle(cnx.session_id, (status >> 2) & 1);
+        window.show_equalizer(status & 1);
+        window.show_equalizer((status >> 1) & 1);
+        window.show_equalizer((status >> 2) & 1);
 		cnx.result_code = status & 7;
 	}
 
@@ -89,7 +91,7 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-		xmms_remote_show_prefs_box(cnx.session_id);
+        cnx.session.window().preferences();
 		cnx.result_code = 0;
 	}
 
@@ -107,7 +109,7 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-		xmms_remote_eject(cnx.session_id);
+        cnx.session.window().eject();
 		cnx.result_code = 0;
 	}
 
@@ -128,5 +130,103 @@ void window_init(void)
 {
 	for(unsigned i = 0; i < sizeof(commands) / sizeof(commands[0]); i++)
 		command_add(commands[i]);
+}
+
+Window::Window(const Session& _session) : session(_session)
+{
+}
+
+Window::Window(const Window& window) : session(window.session)
+{
+}
+
+Window::~Window()
+{
+}
+
+void Window::ensure_running(void) const
+{
+    session.ensure_running();
+}
+
+bool Window::main(void) const
+{
+    ensure_running();
+    return xmms_remote_is_main_win(session.id());
+}
+
+bool Window::playlist(void) const
+{
+    ensure_running();
+    return xmms_remote_is_pl_win(session.id());
+}
+
+bool Window::equalizer(void) const
+{
+    ensure_running();
+    return xmms_remote_is_eq_win(session.id());
+}
+
+void Window::show_main(bool value) const
+{
+    if(main() != value) {
+        toggle_main();
+    }
+}
+
+void Window::show_playlist(bool value) const
+{
+    if(playlist() != value) {
+        toggle_playlist();
+    }
+}
+
+void Window::show_equalizer(bool value) const
+{
+    if(equalizer() != value) {
+        toggle_equalizer();
+    }
+}
+
+bool Window::toggle_main(void) const
+{
+    ensure_running();
+
+    bool v = !main();
+
+    xmms_remote_main_win_toggle(session.id(), v);
+    return v;
+}
+
+bool Window::toggle_playlist(void) const
+{
+    ensure_running();
+
+    bool v = !playlist();
+
+    xmms_remote_pl_win_toggle(session.id(), v);
+    return v;
+}
+
+bool Window::toggle_equalizer(void) const
+{
+    ensure_running();
+
+    bool v = !equalizer();
+
+    xmms_remote_eq_win_toggle(session.id(), v);
+    return v;
+}
+
+void Window::eject(void) const
+{
+    ensure_running();
+    xmms_remote_eject(session.id());
+}
+
+void Window::preferences(void) const
+{
+    ensure_running();
+    xmms_remote_show_prefs_box(session.id());
 }
 

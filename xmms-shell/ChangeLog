@@ -1,3 +1,10 @@
+Mon Oct 21 05:03:31 UTC 2002  Logan Hanks  <logan@vt.edu>
+
+  * Abstracted the xmmsctrl API a tiny bit, which necessitated small changes
+    in the implementation of every command.  Some time will be needed to
+    locate and fix all the tiny bugs I may have introduced in the process.
+  * Added Formatter class (untested currently)
+
 Sat Oct 19 19:49:09 UTC 2002  Logan Hanks  <logan@vt.edu>
 
   * Added in long-awaited changes to make xmms-shell compile under g++ 3

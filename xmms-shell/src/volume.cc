@@ -15,11 +15,12 @@ public:
 
 	virtual void execute(CommandContext &context) const
 	{
+        Session session = context.session;
 		bool setv = false;
 		int chan = 0;
 		int lv, rv, v;
 
-		xmms_remote_get_volume(context.session_id, &lv, &rv);
+        session.volume(lv, rv);
 		v = (lv + rv) / 2;
 		if(context.args.size() > 1) {
 			if(isdigit(context.args[1][0])) {
@@ -49,15 +50,15 @@ public:
 				v = 100;
 			switch(chan) {
 				case 0:
-					xmms_remote_set_volume(context.session_id, v, v);
+                    session.set_volume(v, v);
 					printf("The volume of both channels has been set to %d\n", v);
 					break;
 				case 1:
-					xmms_remote_set_volume(context.session_id, v, rv);
+                    session.set_volume(v, rv);
 					printf("The volume of the left channel has been set to %d\n", v);
 					break;
 				case 2:
-					xmms_remote_set_volume(context.session_id, lv, v);
+                    session.set_volume(lv, v);
 					printf("The volume of the right channel has been set to %d\n", v);
 					break;
 			}
@@ -109,9 +110,10 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
+        Session session = cnx.session;
 		int lv, rv, v = 2, chan = 0;
 
-		xmms_remote_get_volume(cnx.session_id, &lv, &rv);
+        session.volume(lv, rv);
 		if(cnx.args.size() > 1) {
 			if(isdigit(cnx.args[1][0]))
 				v = atoi(cnx.args[1].c_str());
@@ -159,7 +161,7 @@ public:
 			lv = 100;
 		if(rv > 100)
 			rv = 100;
-		xmms_remote_set_volume(cnx.session_id, lv, rv);
+        session.set_volume(lv, rv);
 	}
 
 	SECTION
@@ -210,6 +212,7 @@ public:
 
 	virtual void execute(CommandContext &context) const
 	{
+        Session session = context.session;
 		int bal;
 
 		if(context.args.size() > 1) {
@@ -217,8 +220,7 @@ public:
 			   ((context.args[1][0] == '-' || context.args[1][0] == '+') &&
 			     isdigit(context.args[1][1]))) {
 				bal = atoi(context.args[1].c_str());
-				xmms_remote_set_balance(context.session_id, bal);
-				bal = xmms_remote_get_balance(context.session_id);
+                session.set_balance(bal);
 				printf("Balance level is now %d\n", bal);
 				context.result_code = bal;
 				return;
@@ -226,7 +228,7 @@ public:
 			context.result_code = COMERR_SYNTAX;
 			return;
 		}
-		bal = xmms_remote_get_balance(context.session_id);
+        bal = session.balance();
 		printf("Balance level is %d\n", bal);
 		context.result_code = bal;
 	}
@@ -257,11 +259,12 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-		gfloat v;
+        Session session = cnx.session;
+		float v;
 
 		cnx.result_code = 0;
 		if(cnx.args.size() < 2) {
-			printf("Preamp: %.1f\n", xmms_remote_get_eq_preamp(cnx.session_id));
+			printf("Preamp: %.1f\n", session.eq_preamp());
 			return;
 		}
 		if(!isdigit(cnx.args[1][0]) && (cnx.args[1][0] != '-' || !isdigit(cnx.args[1][1]))) {
@@ -269,9 +272,9 @@ public:
 			return;
 		}
 		v = atof(cnx.args[1].c_str());
-		xmms_remote_set_eq_preamp(cnx.session_id, v);
+        session.set_eq_preamp(v);
 		usleep(10);
-		v = xmms_remote_get_eq_preamp(cnx.session_id);
+        v = session.eq_preamp();
 		printf("Preamp set to: %.1f\n", v);
 	}
 
@@ -295,12 +298,14 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
+        Session session = cnx.session;
 		int band;
-		float *values, v;
+		vector<float> values;
+        float v;
 
 		cnx.result_code = 0;
 		if(cnx.args.size() < 2) {
-			xmms_remote_get_eq(cnx.session_id, 0, &values);
+            session.eq(v, values);
 			for(band = 0; band < 10; band++)
 				printf("Band %d: %.1f\n", band, values[band]);
 			return;
@@ -310,7 +315,7 @@ public:
 			return;
 		}
 		if(cnx.args.size() < 3) {
-			printf("Band %d: %.1f\n", band, xmms_remote_get_eq_band(cnx.session_id, band));
+			printf("Band %d: %.1f\n", band, session.eq_band(band));
 			return;
 		}
 		if(!isdigit(cnx.args[2][0]) && (cnx.args[2][0] != '-' || !isdigit(cnx.args[2][1]))) {
@@ -318,9 +323,9 @@ public:
 			return;
 		}
 		v = atof(cnx.args[2].c_str());
-		xmms_remote_set_eq_band(cnx.session_id, band, v);
+        session.set_eq_band(band, v);
 		usleep(10);
-		v = xmms_remote_get_eq_band(cnx.session_id, band);
+        v = session.eq_band(band);
 		printf("Band %d set to: %.1f\n", band, v);
 	}
 	

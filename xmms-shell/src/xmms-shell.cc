@@ -44,7 +44,7 @@ static int eval_loop(int session_id, FILE *in)
 	int quit = 0, retval = 127;
 
 	while(!quit && (line = getline("xmms-shell> ")))
-		retval = eval_command_string(session_id, line, &quit, TRUE);
+		retval = eval_command_string(session_id, line, quit, TRUE);
 	if(!quit)
 		printf("\n");
 	return retval;
@@ -88,8 +88,11 @@ int main(int argc, char **argv)
 
 	command_init();
 
-	if(do_expr)
-		return eval_command_string(session_id, do_expr, 0, FALSE);
+	if(do_expr) {
+        int quit;
+
+		return eval_command_string(session_id, do_expr, quit, FALSE);
+    }
 	return eval_loop(session_id, stdin);
 }
 

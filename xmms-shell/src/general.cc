@@ -38,35 +38,38 @@ public:
 
 	virtual void execute(CommandContext &context) const
 	{
-		char *title;
+        Session session = context.session;
+		string title;
 		int leftVol, rightVol, pos, rate, freq, nch, t, i;
 #if HAVE_XMMS_REMOTE_GET_EQ
-		float preamp, *bands;
+		float preamp;
+        vector<float> bands;
 #endif
+        Playlist playlist = session.playlist();
 
-		pos = xmms_remote_get_playlist_pos(context.session_id);
-		title = xmms_remote_get_playlist_title(context.session_id, pos);
-		if(xmms_remote_is_playing(context.session_id)) {
-			xmms_remote_get_info(context.session_id, &rate, &freq, &nch);
-			t = xmms_remote_get_output_time(context.session_id);
-			printf("Playing: %s (%d kbps, %d hz, %d channels)\n", title ? title : "<no title>", rate / 1000, freq, nch);
+		pos = playlist.position();
+        title = playlist.title(pos);
+        if(session.playing()) {
+            session.playback_info(rate, freq, nch);
+            t = session.playback_time();
+			printf("Playing: %s (%d kbps, %d hz, %d channels)\n", title.size() ? title.c_str() : "<no title>", rate / 1000, freq, nch);
 			printf("Time: %02d:%02d.%02d%s\n", t / 60000, (t / 1000) % 60, (t / 10) % 100,
-					xmms_remote_is_paused(context.session_id) ? " (paused)" : "");
+					session.paused() ? " (paused)" : "");
 		} else
-			printf("Current song: %s\n", title ? title : "<no track selected>");
-		xmms_remote_get_volume(context.session_id, &leftVol, &rightVol);
+			printf("Current song: %s\n", title.size() ? title.c_str() : "<no track selected>");
+        session.volume(leftVol, rightVol);
 #if HAVE_XMMS_REMOTE_IS_REPEAT
-		printf("Repeat mode: %s\n", xmms_remote_is_repeat(context.session_id) ? "on" : "off");
+		printf("Repeat mode: %s\n", session.repeat() ? "on" : "off");
 #endif
 #if HAVE_XMMS_REMOTE_IS_SHUFFLE
-		printf("Shuffle mode: %s\n", xmms_remote_is_shuffle(context.session_id) ? "on" : "off");
+		printf("Shuffle mode: %s\n", session.shuffle() ? "on" : "off");
 #endif
-		printf("Balance: %d\n", xmms_remote_get_balance(context.session_id));
-		printf("Skin: %s\n", xmms_remote_get_skin(context.session_id));
+		printf("Balance: %d\n", session.balance());
+		printf("Skin: %s\n", session.skin().c_str());
 		printf("Left volume: %d\n", leftVol);
 		printf("Right volume: %d\n", rightVol);
 #if HAVE_XMMS_REMOTE_GET_EQ
-		xmms_remote_get_eq(context.session_id, &preamp, &bands);
+        session.eq(preamp, bands);
 		printf("Equalizer preamp: %.1f\n", preamp);
 		printf("Equalizer bands:");
 		for(i = 0; i < 10; i++)
@@ -79,9 +82,7 @@ public:
 			else
 				printf("  %3.1f", bands[i]);
 		printf("\n");
-		g_free(bands);
 #endif
-
 		context.result_code = COMRES_SUCCESS;
 	}
 
@@ -306,7 +307,7 @@ public:
 
 	virtual void execute(CommandContext &context) const
 	{
-		int xver = xmms_remote_get_version(context.session_id);
+		int xver = context.session.version();
 
 		printf("XMMS-Shell v%s by Logan Hanks <logan@vt.edu>\n", VERSION);
 		printf("Build info: %s %s with %s\n", __TIME__, __DATE__, __VERSION__);
@@ -356,7 +357,7 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
-		xmms_remote_quit(cnx.session_id);
+        cnx.session.quit();
 		cnx.quit = true;
 		cnx.result_code = 0;
 	}

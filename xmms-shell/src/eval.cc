@@ -3,6 +3,7 @@
 #include "command.h"
 #include <stdio.h>
 #include <cctype>
+#include <glib.h>
 
 static string dequote(const string &line, string::const_iterator &p, bool &completed)
 {
@@ -55,12 +56,13 @@ static vector<string> tokenize(const string &line, bool &completed)
 	return args;
 }
 
-gint eval_command(gint session_id, gchar *expr, gint *quit, gboolean interactive)
+int eval_command(const Session &session, char *expr, int& quit, bool interactive)
 {
 	const Command *command;
-	CommandContext context(session_id);
+	CommandContext context(session);
 	bool completed;
 
+    quit = 0;
 	context.args = tokenize(expr, completed);
 	if(!completed) {
 		fprintf(stderr, "Incomplete command.  Multi-line entry of commands not yet implemented.\n");
@@ -76,25 +78,25 @@ gint eval_command(gint session_id, gchar *expr, gint *quit, gboolean interactive
 			return COMERR_NOTINTERACTIVE;
 		}
 		command->execute(context);
-		if(quit && context.quit)
-			*quit = 1;
-		if(context.result_code == COMERR_SYNTAX)
+		if(context.quit) {
+			quit = 1;
+        }
+		if(context.result_code == COMERR_SYNTAX) {
 			fprintf(stderr, "Usage: %s\n", command->get_syntax().c_str());
+        }
 	}
 	return context.result_code;
 }
 
-gint eval_command_string(gint session_id, gchar *expr, gint *quit, gboolean interactive)
+int eval_command_string(const Session& session, char *expr, int& quit, bool interactive)
 {
-	gchar **commands;
-	gint i, q, result = 0;
+	char **commands;
+	int i, result = 0;
 
 	g_strdelimit(expr, "\r\n;", ';');
 	commands = g_strsplit(expr, ";", 0);
-	for(i = q = 0; !q && commands[i]; i++)
-		result = eval_command(session_id, commands[i], &q, interactive);
-	if(quit)
-		*quit = q;
+	for(i = quit = 0; !quit && commands[i]; i++)
+		result = eval_command(session, commands[i], quit, interactive);
 	g_strfreev(commands);
 	return result;
 }

@@ -2,10 +2,10 @@
 
 #define _XMMS_SHELL_EVAL_H_
 
-#include <glib.h>
+#include "session.h"
 
-gint eval_command(gint session_id, gchar *expr, gint *quit, gboolean interactive);
-gint eval_command_string(gint session_id, gchar *expr, gint *quit, gboolean interactive);
+int eval_command(const Session& session, char *expr, int& quit, bool interactive);
+int eval_command_string(const Session& session, char *expr, int& quit, bool interactive);
 
 #endif
 

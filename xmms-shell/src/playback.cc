@@ -12,15 +12,15 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
-		int p;
+        Session session = cnx.session;
+		bool p;
 
-		if(!xmms_remote_is_playing(cnx.session_id) && !xmms_remote_is_paused(cnx.session_id)) {
+        if(!session.playing() && !session.paused()) {
 			printf("Pause command has no effect because no playback is currently in progress.\n");
 			cnx.result_code = COMERR_NOEFFECT;
 			return;
 		}
-		xmms_remote_pause(cnx.session_id);
-		p = xmms_remote_is_paused(cnx.session_id);
+        p = session.pause_toggle();
 		printf("Playback %spaused\n", p ? "un" : "");
 		cnx.result_code = p;
 	}
@@ -47,22 +47,28 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
+        Session session = cnx.session;
+        Playlist playlist = session.playlist();
 		int pos, offset, ch;
 
-		if(!xmms_remote_is_playing(cnx.session_id)) {
+        if(!session.playing()) {
 			printf("Playback is not currently in progress.\n");
 			cnx.result_code = COMERR_NOEFFECT;
 			return;
 		}
-		pos = xmms_remote_get_playlist_pos(cnx.session_id);
-		offset = xmms_remote_get_output_time(cnx.session_id);
-		xmms_remote_stop(cnx.session_id);
+
+        pos = playlist.position();
+        offset = session.playback_time();
+        session.stop();
+
 		printf("Press [ENTER] to resume: ");
 		fflush(stdout);
 		while((ch = getc(stdin)) != EOF && ch != '\n');
-		xmms_remote_set_playlist_pos(cnx.session_id, pos);
-		xmms_remote_play(cnx.session_id);
-		xmms_remote_jump_to_time(cnx.session_id, offset);
+
+        playlist.set_position(pos);
+        session.play();
+        session.jump_to_time(offset);
+
 		printf("Playback resumed.\n");
 		cnx.result_code = 0;
 	}
@@ -95,11 +101,12 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
-		int p, q;
+        Session session = cnx.session;
+        bool p, q;
 
-		p = xmms_remote_is_playing(cnx.session_id);
-		q = xmms_remote_is_paused(cnx.session_id);
-		xmms_remote_play(cnx.session_id);
+        p = session.playing();
+        q = session.paused();
+        session.play();
 		if(p) {
 			if(q) {
 				printf("Playback unpaused\n");
@@ -136,11 +143,12 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
-		int p, q;
+        Session session = cnx.session;
+        bool p, q;
 
-		p = xmms_remote_is_playing(cnx.session_id);
-		q = xmms_remote_is_paused(cnx.session_id);
-		xmms_remote_stop(cnx.session_id);
+        p = session.playing();
+        q = session.paused();
+        session.stop();
 		if(p) {
 			if(q) {
 				printf("Playback unpaused and stopped\n");
@@ -175,10 +183,12 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-#if HAVE_XMMS_REMOTE_IS_REPEAT
-		gboolean status, newstatus;
+        Session session = cnx.session;
 
-		status = xmms_remote_is_repeat(cnx.session_id);
+#if HAVE_XMMS_REMOTE_IS_REPEAT
+		bool status, newstatus;
+
+        status = session.repeat();
 		if(cnx.args.size() < 2)
 			newstatus = !status;
 		else if(!strncasecmp("off", cnx.args[1].c_str(), cnx.args[1].size()))
@@ -192,12 +202,12 @@ public:
 			return;
 		}
 		cnx.result_code = newstatus;
+        session.set_repeat(newstatus);
 		printf("Repeat mode is now: %s\n", cnx.result_code ? "on" : "off");
-		if(status != newstatus)
 #else
 		cnx.result_code = 0;
+        session.repeat_toggle();
 #endif
-		xmms_remote_toggle_repeat(cnx.session_id);
 	}
 
 #if HAVE_XMMS_REMOTE_IS_REPEAT
@@ -228,10 +238,12 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-#if HAVE_XMMS_REMOTE_IS_SHUFFLE
-		gboolean status, newstatus;
+        Session session = cnx.session;
 
-		status = xmms_remote_is_shuffle(cnx.session_id);
+#if HAVE_XMMS_REMOTE_IS_SHUFFLE
+		bool status, newstatus;
+
+		status = session.shuffle();
 		if(cnx.args.size() < 2)
 			newstatus = !status;
 		else if(!strncasecmp("off", cnx.args[1].c_str(), cnx.args[1].size()))
@@ -246,11 +258,11 @@ public:
 		}
 		cnx.result_code = newstatus;
 		printf("Shuffle mode is now: %s\n", cnx.result_code ? "on" : "off");
-		if(status != newstatus)
+        session.set_shuffle(newstatus);
 #else
 		cnx.result_code = 0;
+        session.shuffle_toggle();
 #endif
-		xmms_remote_toggle_shuffle(cnx.session_id);
 	}
 
 #if HAVE_XMMS_REMOTE_IS_SHUFFLE
