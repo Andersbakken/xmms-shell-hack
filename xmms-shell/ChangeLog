@@ -1,3 +1,4 @@
+Tue Feb 12 01:30:18 UTC 2002  Logan Hanks  <logan@vt.edu>
 
   * Fixed a typo that caused downvolume to be the same as upvolume (copy and
     paste is a sign of poor design!)
