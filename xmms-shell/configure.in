@@ -1,6 +1,6 @@
 AC_INIT(Makefile.in)
 
-AM_INIT_AUTOMAKE(xmms-shell, 0.99.1-2)
+AM_INIT_AUTOMAKE(xmms-shell, 0.99.2)
 AM_CONFIG_HEADER(include/config.h)
 
 AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes, no)
