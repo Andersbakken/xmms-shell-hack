@@ -6,6 +6,7 @@ noinst_HEADERS = \
 	misc.h \
 	output.h \
 	playback.h \
+	playlist.h \
 	volume.h \
 	window.h
 

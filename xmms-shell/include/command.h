@@ -32,7 +32,7 @@ public:
 	int result_code;
 	vector<string> args;
 
-	CommandContext(int _session_id) : session_id(_session_id), quit(false), result_code(0) { }
+	CommandContext(int _session_id) : quit(false), session_id(_session_id), result_code(0) { }
 	void add_arg(const string &arg) { args.push_back(arg); }
 };
 
