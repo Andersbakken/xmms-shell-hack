@@ -515,6 +515,22 @@ string Playlist::current_title(void) const
     return title(position());
 }
 
+string Playlist::filename(int pos) const
+{
+    check_position(pos);
+
+    char *c_str = xmms_remote_get_playlist_file(session.id(), pos - 1);
+    string str(c_str);
+
+    g_free(c_str);
+    return str;
+}
+
+string Playlist::current_filename(void) const
+{
+    return filename(position());
+}
+
 int Playlist::next(void) const
 {
     session.ensure_running();

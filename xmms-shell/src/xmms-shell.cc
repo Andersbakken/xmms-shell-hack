@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <getopt.h>
 #include <xmmsctrl.h>
 #include "config.h"
@@ -40,13 +41,27 @@ static void display_usage(FILE *f)
 
 static int eval_loop(int session_id, FILE *in)
 {
-	char *line;
 	int quit = 0, retval = 127;
+    ScriptContext *context;
 
-	while(!quit && (line = getline("xmms-shell> ")))
-		retval = eval_command_string(session_id, line, quit, TRUE);
-	if(!quit)
+    if(isatty(fileno(in))) {
+        context = new InteractiveContext();
+    } else {
+        context = new FileContext(in);
+    }
+    context->set_session(Session(session_id));
+	//while(!quit && (line = getline("xmms-shell> ")))
+    try {
+        while(!quit) {
+            string line = context->get_line();
+
+		    retval = eval_command_string(context, line, quit, TRUE);
+        }
+    } catch(EOFException ex) {
+    }
+	if(!quit) {
 		printf("\n");
+    }
 	return retval;
 }
 
@@ -89,9 +104,11 @@ int main(int argc, char **argv)
 	command_init();
 
 	if(do_expr) {
+        ScriptContext *context = new StringContext(do_expr);
+        string line = context->get_line();
         int quit;
 
-		return eval_command_string(session_id, do_expr, quit, FALSE);
+		return eval_command_string(context, line, quit, FALSE);
     }
 	return eval_loop(session_id, stdin);
 }

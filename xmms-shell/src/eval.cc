@@ -56,10 +56,10 @@ static vector<string> tokenize(const string &line, bool &completed)
 	return args;
 }
 
-int eval_command(const Session &session, char *expr, int& quit, bool interactive)
+int eval_command(ScriptContext *scontext, const string& expr, int& quit, bool interactive)
 {
 	const Command *command;
-	CommandContext context(session);
+	CommandContext context(scontext);
 	bool completed;
 
     quit = 0;
@@ -88,15 +88,17 @@ int eval_command(const Session &session, char *expr, int& quit, bool interactive
 	return context.result_code;
 }
 
-int eval_command_string(const Session& session, char *expr, int& quit, bool interactive)
+int eval_command_string(ScriptContext *scontext, string& expr, int& quit, bool interactive)
 {
 	char **commands;
 	int i, result = 0;
+    char buf[strlen(expr.c_str()) + 1];
 
-	g_strdelimit(expr, "\r\n;", ';');
-	commands = g_strsplit(expr, ";", 0);
+    strcpy(buf, expr.c_str());
+	g_strdelimit(buf, "\r\n;", ';');
+	commands = g_strsplit(buf, ";", 0);
 	for(i = quit = 0; !quit && commands[i]; i++)
-		result = eval_command(session, commands[i], quit, interactive);
+		result = eval_command(scontext, commands[i], quit, interactive);
 	g_strfreev(commands);
 	return result;
 }

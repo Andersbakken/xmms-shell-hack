@@ -2,10 +2,10 @@
 
 #define _XMMS_SHELL_EVAL_H_
 
-#include "session.h"
+#include "script.h"
 
-int eval_command(const Session& session, char *expr, int& quit, bool interactive);
-int eval_command_string(const Session& session, char *expr, int& quit, bool interactive);
+int eval_command(ScriptContext *context, string& expr, int& quit, bool interactive);
+int eval_command_string(ScriptContext *context, string& expr, int& quit, bool interactive);
 
 #endif
 

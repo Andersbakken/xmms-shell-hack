@@ -1,3 +1,8 @@
+Mon Oct 21 22:44:49 UTC 2002  Logan Hanks  <logan@vt.edu>
+
+  * Made changes to how script/interactive input is processed
+  * Added simple customizable prompt support
+
 Mon Oct 21 05:03:31 UTC 2002  Logan Hanks  <logan@vt.edu>
 
   * Abstracted the xmmsctrl API a tiny bit, which necessitated small changes

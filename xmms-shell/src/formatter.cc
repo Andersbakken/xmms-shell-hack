@@ -28,7 +28,7 @@ string Formatter::expand(const string format) const
 
     for(int i = 0; i < format.size(); i++) {
         if(format[i] == '%') {
-            result.append(values[++i]);
+            result.append(values[(char) format[++i]]);
         } else {
             result.append(1, format[i]);
         }

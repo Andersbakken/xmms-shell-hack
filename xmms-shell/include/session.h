@@ -16,7 +16,7 @@ class Session
     int sid;
 
 public:
-    Session(int id);
+    Session(int id = 0);
     Session(const Session& session);
     ~Session();
 

@@ -11,7 +11,9 @@ xmms_shell_SOURCES = \
 	output.cc \
 	playback.cc \
 	playlist.cc \
+    script.cc \
     session.cc \
+    util.cc \
 	volume.cc \
 	window.cc \
 	xmms-shell.cc

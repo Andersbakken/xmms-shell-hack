@@ -22,6 +22,8 @@ public:
     void check_position(int pos, int min_value = 1) const;
     string current_title(void) const;
     string title(int pos) const;
+    string current_filename(void) const;
+    string filename(int pos) const;
     vector<string> filenames(void) const;
     vector<string> titles(void) const;
     int next(void) const;

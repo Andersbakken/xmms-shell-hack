@@ -9,7 +9,9 @@ noinst_HEADERS = \
 	output.h \
 	playback.h \
 	playlist.h \
+    script.h \
     session.h \
+    util.h \
 	volume.h \
 	window.h
 

@@ -8,6 +8,7 @@
 using namespace std;
 
 #include "playlist.h"
+#include "script.h"
 
 #define COMFLAG_INTERACTIVE	0x1
 
@@ -31,6 +32,7 @@ using namespace std;
 class CommandContext
 {
 public:
+    ScriptContext *context;
     Session session;
 	bool quit;
 	//int session_id;
@@ -38,7 +40,8 @@ public:
 	vector<string> args;
 
 	//CommandContext(int _session_id) : quit(false), session_id(_session_id), result_code(0) { }
-    CommandContext(const Session& _session) : session(_session), quit(false), result_code(0) { }
+    //CommandContext(const Session& _session) : session(_session), quit(false), result_code(0) { }
+    CommandContext(ScriptContext *cnx) : context(cnx), session(cnx->session()), quit(false), result_code(0) { }
 	void add_arg(const string &arg) { args.push_back(arg); }
 };
 
