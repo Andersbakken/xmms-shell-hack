@@ -1,0 +1,35 @@
+/* include/config.h.in.  Generated automatically from configure.in by autoheader 2.13.  */
+
+/* Define if you have the xmms_remote_get_eq function.  */
+#undef HAVE_XMMS_REMOTE_GET_EQ
+
+/* Define if you have the xmms_remote_get_eq_band function.  */
+#undef HAVE_XMMS_REMOTE_GET_EQ_BAND
+
+/* Define if you have the xmms_remote_get_eq_preamp function.  */
+#undef HAVE_XMMS_REMOTE_GET_EQ_PREAMP
+
+/* Define if you have the xmms_remote_is_repeat function.  */
+#undef HAVE_XMMS_REMOTE_IS_REPEAT
+
+/* Define if you have the xmms_remote_is_shuffle function.  */
+#undef HAVE_XMMS_REMOTE_IS_SHUFFLE
+
+/* Define if you have the xmms_remote_set_eq_band function.  */
+#undef HAVE_XMMS_REMOTE_SET_EQ_BAND
+
+/* Define if you have the xmms_remote_set_eq_preamp function.  */
+#undef HAVE_XMMS_REMOTE_SET_EQ_PREAMP
+
+/* Define if you have the readline library (-lreadline).  */
+#undef HAVE_LIBREADLINE
+
+/* Define if you have the xmms library (-lxmms).  */
+#undef HAVE_LIBXMMS
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+

@@ -1,0 +1,38 @@
+
+  * Fixed a typo that caused downvolume to be the same as upvolume (copy and
+    paste is a sign of poor design!)
+  * The quit field of the CommandContext object is now explicitly
+    initialize to false (why didn't g++ -Wall catch this?)
+  * Implemented XMMSQUIT command (idea courtesy of Roderick Schertler)
+  * include/playlist.h is now mentioned in include/Makefile.am
+  * Implemented RANDOMTRACK command, with only a minor attempt at making it
+    seem random.  Rather than hard-coding some behavior for the NEXT and
+    PREVIOUS commands when shuffle-mode is on, RAND could be used instead.
+  * Went ahead and hard-coded some behavior for the NEXT and PREVIOUS
+    commands when shuffle-mode is on.  Note that this only works on versions
+    of XMMS that provide xmms_remote_is_shuffle (I forget which version
+    introduced this).  XMMS's support of this seems really poor, so maybe
+    RANDOMTRACK is better.
+
+Mon Feb 11 03:46:06 UTC 2002  Logan Hanks  <logan@vt.edu>
+
+  * Released as 0.99.0
+  * Massively rewritten
+    - Rewrote how commands are specified and how they provide help text
+    - Implemented simple quoting in the command parser
+    - If readline is enabled, filenames will be properly quoted
+    - In the future, more complex scripting (rather than a simple batch
+      mode) may be implemented, so command system redesigned to reflect this
+    - All commands should now give some sort of feedback
+    - All of the functionality of 0.2.2 should be emulated
+
+
+Thu May 18 02:46:59 UTC 2000  Logan Hanks  <logan@vt.edu>
+
+  * Released as 0.2.2
+  * Moved old changes to ChangeLog.old, switched to new format
+  * Made more improvements to the installation process
+  * Added resetdevice command
+  * Added preamp and band commands (only available with a very
+    recent copy of XMMS checked out from CVS)
+

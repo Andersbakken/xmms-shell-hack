@@ -1,0 +1,54 @@
+AC_INIT(Makefile.in)
+
+AM_INIT_AUTOMAKE(xmms-shell, 0.99.0)
+AM_CONFIG_HEADER(include/config.h)
+
+AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes, no)
+
+if test x$XMMS_CONFIG = xno
+ then
+  AC_MSG_ERROR("Could not find xmms-config.  XMMS must be installed.")
+ fi
+
+AC_MSG_CHECKING("XMMS version")
+XMMS_VERSION=`xmms-config --version`
+AC_MSG_RESULT($XMMS_VERSION)
+
+AC_MSG_CHECKING("XMMS libs")
+XMMS_LIBS=`xmms-config --libs`
+LIBS="$LIBS $XMMS_LIBS"
+AC_MSG_RESULT(yes)
+
+AC_MSG_CHECKING("XMMS cflags")
+XMMS_CFLAGS=`xmms-config --cflags`
+CXXFLAGS="$CXXFLAGS $XMMS_CFLAGS"
+AC_MSG_RESULT(yes)
+
+with_readline=yes
+AC_ARG_WITH(readline,
+            [  --with-readline         support fancy command line editing])
+
+if test x$with_readline = xyes
+ then
+  AC_CHECK_LIB(readline, readline)
+ fi
+
+AC_PROG_CXX
+
+AC_CHECK_LIB(xmms, xmms_remote_play)
+AC_CHECK_FUNCS(xmms_remote_is_repeat)
+AC_CHECK_FUNCS(xmms_remote_is_shuffle)
+AC_CHECK_FUNCS(xmms_remote_get_eq)
+AC_CHECK_FUNCS(xmms_remote_get_eq_preamp)
+AC_CHECK_FUNCS(xmms_remote_get_eq_band)
+AC_CHECK_FUNCS(xmms_remote_set_eq_preamp)
+AC_CHECK_FUNCS(xmms_remote_set_eq_band)
+
+#PACKAGE=xmms-shell
+#VERSION=1.0.0
+
+#AC_SUBST(PACKAGE)
+#AC_SUBST(VERSION)
+
+AC_OUTPUT(Makefile include/Makefile src/Makefile)
+

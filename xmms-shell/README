@@ -1,0 +1,20 @@
+    This is XMMS-Shell, a simple command-line utility for controlling XMMS.
+It provides every command-line feature the xmms command provides, plus a
+few others:
+
+      * Volume control
+      * Equalizer control
+      * Control over display of main, equalizer, and playlist windows
+      * Can pop up the preferences or file load dialogs
+      * A few miscellaneous but potentially useful commands, such as FADE,
+        FAKEPAUSE, and RESETDEVICE
+
+    The 0.99 series of XMMS-Shell represents a complete rewrite of the 0.2
+series.  All of the functionality of 0.2 should still be provided.  The 0.99
+series is considered beta.  Once the code is deemed stable, it will graduate
+to version 1.0.  This code has barely been tested with XMMS 1.2.6, but it
+should work with any version of XMMS after 1.0.
+
+February 10, 2002
+Logan Hanks
+
