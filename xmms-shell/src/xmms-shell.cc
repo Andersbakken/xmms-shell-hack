@@ -99,6 +99,7 @@ int main(int argc, char **argv)
 	misc_init();
 	playback_init();
 	playlist_init();
+    script_init();
 	volume_init();
 	window_init();
 

@@ -18,9 +18,9 @@ public:
         Session session = context.session;
 		bool setv = false;
 		int chan = 0;
-		int lv, rv, v;
+		guint32 lv, rv, v;
 
-        session.volume(lv, rv);
+        session.get_volume(lv, rv);
 		v = (lv + rv) / 2;
 		if(context.args.size() > 1) {
 			if(isdigit(context.args[1][0])) {
@@ -111,9 +111,9 @@ public:
 	virtual void execute(CommandContext &cnx) const
 	{
         Session session = cnx.session;
-		int lv, rv, v = 2, chan = 0;
+		guint32 lv, rv, v = 2, chan = 0;
 
-        session.volume(lv, rv);
+        session.get_volume(lv, rv);
 		if(cnx.args.size() > 1) {
 			if(isdigit(cnx.args[1][0]))
 				v = atoi(cnx.args[1].c_str());
@@ -228,7 +228,7 @@ public:
 			context.result_code = COMERR_SYNTAX;
 			return;
 		}
-        bal = session.balance();
+        bal = session.get_balance();
 		printf("Balance level is %d\n", bal);
 		context.result_code = bal;
 	}
@@ -264,7 +264,7 @@ public:
 
 		cnx.result_code = 0;
 		if(cnx.args.size() < 2) {
-			printf("Preamp: %.1f\n", session.eq_preamp());
+			printf("Preamp: %.1f\n", session.get_eq_preamp());
 			return;
 		}
 		if(!isdigit(cnx.args[1][0]) && (cnx.args[1][0] != '-' || !isdigit(cnx.args[1][1]))) {
@@ -274,7 +274,7 @@ public:
 		v = atof(cnx.args[1].c_str());
         session.set_eq_preamp(v);
 		usleep(10);
-        v = session.eq_preamp();
+        v = session.get_eq_preamp();
 		printf("Preamp set to: %.1f\n", v);
 	}
 
@@ -305,7 +305,7 @@ public:
 
 		cnx.result_code = 0;
 		if(cnx.args.size() < 2) {
-            session.eq(v, values);
+            session.get_eq(v, values);
 			for(band = 0; band < 10; band++)
 				printf("Band %d: %.1f\n", band, values[band]);
 			return;
@@ -315,7 +315,7 @@ public:
 			return;
 		}
 		if(cnx.args.size() < 3) {
-			printf("Band %d: %.1f\n", band, session.eq_band(band));
+			printf("Band %d: %.1f\n", band, session.get_eq_band(band));
 			return;
 		}
 		if(!isdigit(cnx.args[2][0]) && (cnx.args[2][0] != '-' || !isdigit(cnx.args[2][1]))) {
@@ -325,7 +325,7 @@ public:
 		v = atof(cnx.args[2].c_str());
         session.set_eq_band(band, v);
 		usleep(10);
-        v = session.eq_band(band);
+        v = session.get_eq_band(band);
 		printf("Band %d set to: %.1f\n", band, v);
 	}
 	

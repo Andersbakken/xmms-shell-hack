@@ -1,3 +1,13 @@
+Wed Oct 23 10:25:36 UTC 2002
+
+  * Big changes of the new Session class to support either xmmsctrl or
+    xmmssess transparently (xmmssess is very experimental right now)
+  * Added SET command for displaying and setting environment variables
+  * Added UNSET command
+  * Added EXEC command (currently just a simple call to system).  When
+    I implement support for sh style backticks, this command will be
+    obsolete.  Such support is several versions away, however.
+
 Wed Oct 23 00:11:03 UTC 2002  Logan Hanks  <logan@vt.edu>
 
   * Fixed error in reimplementation of the LOAD command

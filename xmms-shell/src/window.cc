@@ -13,7 +13,7 @@ public:
 
 	virtual void execute(CommandContext &cnx) const
 	{
-        Window window = cnx.session.window();
+        Window window = cnx.session.get_window();
 		int apply, status, command;
 
 		if(cnx.args.size() < 3)  {
@@ -91,7 +91,7 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-        cnx.session.window().preferences();
+        cnx.session.get_window().preferences();
 		cnx.result_code = 0;
 	}
 
@@ -109,7 +109,7 @@ public:
 	
 	virtual void execute(CommandContext &cnx) const
 	{
-        cnx.session.window().eject();
+        cnx.session.get_window().eject();
 		cnx.result_code = 0;
 	}
 
@@ -152,19 +152,19 @@ void Window::ensure_running(void) const
 bool Window::main(void) const
 {
     ensure_running();
-    return xmms_remote_is_main_win(session.id());
+    return xmms_remote_is_main_win(session.get_id());
 }
 
 bool Window::playlist(void) const
 {
     ensure_running();
-    return xmms_remote_is_pl_win(session.id());
+    return xmms_remote_is_pl_win(session.get_id());
 }
 
 bool Window::equalizer(void) const
 {
     ensure_running();
-    return xmms_remote_is_eq_win(session.id());
+    return xmms_remote_is_eq_win(session.get_id());
 }
 
 void Window::show_main(bool value) const
@@ -194,7 +194,7 @@ bool Window::toggle_main(void) const
 
     bool v = !main();
 
-    xmms_remote_main_win_toggle(session.id(), v);
+    xmms_remote_main_win_toggle(session.get_id(), v);
     return v;
 }
 
@@ -204,7 +204,7 @@ bool Window::toggle_playlist(void) const
 
     bool v = !playlist();
 
-    xmms_remote_pl_win_toggle(session.id(), v);
+    xmms_remote_pl_win_toggle(session.get_id(), v);
     return v;
 }
 
@@ -214,19 +214,19 @@ bool Window::toggle_equalizer(void) const
 
     bool v = !equalizer();
 
-    xmms_remote_eq_win_toggle(session.id(), v);
+    xmms_remote_eq_win_toggle(session.get_id(), v);
     return v;
 }
 
 void Window::eject(void) const
 {
     ensure_running();
-    xmms_remote_eject(session.id());
+    xmms_remote_eject(session.get_id());
 }
 
 void Window::preferences(void) const
 {
     ensure_running();
-    xmms_remote_show_prefs_box(session.id());
+    xmms_remote_show_prefs_box(session.get_id());
 }
 

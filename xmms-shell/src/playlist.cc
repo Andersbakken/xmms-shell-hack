@@ -18,7 +18,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         int pos;
 
         if(cnx.args.size() < 2 || !isdigit(cnx.args[1][0])) {
@@ -55,14 +55,14 @@ class Traverse
 public:
     Traverse(int _jump) : jump(_jump) { }
 
-    int traverse_playlist(const Session& session)
+    int traverse_playlist(Session& session)
     {
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         int pos = playlist.position();
         int len = playlist.length();
 
 #if HAVE_XMMS_REMOTE_IS_SHUFFLE
-        if(session.shuffle()) {
+        if(session.is_shuffle()) {
             if(jump < 0)
                 playlist.prev();
             else
@@ -162,7 +162,7 @@ public:
     
     virtual void execute(CommandContext &cnx) const
     {
-        cnx.session.playlist().clear();
+        cnx.session.get_playlist().clear();
     }
 
     COM_SYNOPSIS("clear the current playlist")
@@ -180,7 +180,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         vector<string> list;
         int start = 0, stop = -1, x = 1, digs, pos;
         bool filenames = false;
@@ -234,7 +234,7 @@ public:
     SECTION
 };
 
-int Playlist::load(vector<string>::const_iterator start, vector<string>::const_iterator end) const
+int Playlist::load(vector<string>::const_iterator start, vector<string>::const_iterator end)
 {
     session.ensure_running();
 
@@ -246,7 +246,7 @@ int Playlist::load(vector<string>::const_iterator start, vector<string>::const_i
         start++;
         n++;
     }
-    xmms_remote_playlist_add(session.id(), list);
+    xmms_remote_playlist_add(session.get_id(), list);
     g_list_free(list);
     return n;
 }
@@ -259,7 +259,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         vector<string>::const_iterator i = cnx.args.begin();
 
         if(cnx.args.size() < 2) {
@@ -290,7 +290,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         FILE *f;
         vector<string> list;
 
@@ -335,7 +335,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         int len = playlist.length();
 
         if(len < 2) {
@@ -379,7 +379,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
 
         if(playlist.length() == 0) {
             printf("The playlist is empty.\n");
@@ -412,7 +412,7 @@ public:
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
         int pos, pos2;
 
         if(cnx.args.size() < 2 || !isdigit(cnx.args[1][0])) {
@@ -479,32 +479,32 @@ Playlist::~Playlist()
 void Playlist::clear(void) const
 {
     session.ensure_running();
-    xmms_remote_playlist_clear(session.id());
+    xmms_remote_playlist_clear(session.get_id());
 }
 
 int Playlist::position(void) const
 {
     session.ensure_running();
-    return xmms_remote_get_playlist_pos(session.id()) + 1;
+    return xmms_remote_get_playlist_pos(session.get_id()) + 1;
 }
 
 void Playlist::set_position(int pos) const
 {
     check_position(pos);
-    xmms_remote_set_playlist_pos(session.id(), pos - 1);
+    xmms_remote_set_playlist_pos(session.get_id(), pos - 1);
 }
 
 int Playlist::length(void) const
 {
     session.ensure_running();
-    return xmms_remote_get_playlist_length(session.id());
+    return xmms_remote_get_playlist_length(session.get_id());
 }
 
 string Playlist::title(int pos) const
 {
     check_position(pos);
 
-    char *c_str = xmms_remote_get_playlist_title(session.id(), pos - 1);
+    char *c_str = xmms_remote_get_playlist_title(session.get_id(), pos - 1);
     string str(c_str);
 
     g_free(c_str);
@@ -520,7 +520,7 @@ string Playlist::filename(int pos) const
 {
     check_position(pos);
 
-    char *c_str = xmms_remote_get_playlist_file(session.id(), pos - 1);
+    char *c_str = xmms_remote_get_playlist_file(session.get_id(), pos - 1);
     string str(c_str);
 
     g_free(c_str);
@@ -535,14 +535,14 @@ string Playlist::current_filename(void) const
 int Playlist::next(void) const
 {
     session.ensure_running();
-    xmms_remote_playlist_next(session.id());
+    xmms_remote_playlist_next(session.get_id());
     return position();
 }
 
 int Playlist::prev(void) const
 {
     session.ensure_running();
-    xmms_remote_playlist_prev(session.id());
+    xmms_remote_playlist_prev(session.get_id());
     return position();
 }
 
@@ -580,7 +580,7 @@ vector<string> Playlist::filenames(void) const
     char *c_str;
 
     for(int i = 0; i < len; i++) {
-        c_str = xmms_remote_get_playlist_file(session.id(), i);
+        c_str = xmms_remote_get_playlist_file(session.get_id(), i);
         list[i] = c_str;
         g_free(c_str);
     }
@@ -594,7 +594,7 @@ vector<string> Playlist::titles(void) const
     char *c_str;
 
     for(int i = 0; i < len; i++) {
-        c_str = xmms_remote_get_playlist_title(session.id(), i);
+        c_str = xmms_remote_get_playlist_title(session.get_id(), i);
         list[i] = c_str;
         g_free(c_str);
     }
@@ -614,7 +614,7 @@ int Playlist::remove(int pos1, int pos2) const
     check_position(pos1);
     check_position(pos2, pos1);
     while(pos2 >= pos1) {
-        xmms_remote_playlist_delete(session.id(), --pos2);
+        xmms_remote_playlist_delete(session.get_id(), --pos2);
         n++;
     }
     return n;

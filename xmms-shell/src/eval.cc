@@ -26,34 +26,39 @@ static string dequote(const string &line, string::const_iterator &p, bool &compl
 	return arg;
 }
 
-static vector<string> tokenize(const string &line, bool &completed)
+static void tokenize(const string &line, bool &completed, vector<string>& args, vector<string>& raw)
 {
-	vector<string> args;
 	string cur;
 	string::const_iterator p = line.begin();
+    int pos = 0;
 
 	completed = true;
 	while(p != line.end()) {
 		cur = "";
-		while(isspace(*p))
+		while(isspace(*p)) {
 			p++;
+            pos++;
+        }
 		if(p == line.end())
 			break;
+        raw.push_back(line.substr(pos));
 		while(p != line.end() && !isspace(*p)) {
 			if(*p == '\\') {
-				if(++p == line.end()) {
+				if(pos++, ++p == line.end()) {
 					completed = false;
 					break;
 				}
 				cur += *p++;
+                pos++;
 			} else if(*p == '"' || *p == '\'')
 				cur += dequote(line, p, completed);
-			else
-				cur += *p++;
+			else {
+				pos++;
+                cur += *p++;
+            }
 		}
 		args.push_back(cur);
 	}
-	return args;
 }
 
 int eval_command(ScriptContext *scontext, const string& expr, int& quit, bool interactive)
@@ -63,7 +68,7 @@ int eval_command(ScriptContext *scontext, const string& expr, int& quit, bool in
 	bool completed;
 
     quit = 0;
-	context.args = tokenize(expr, completed);
+	tokenize(expr, completed, context.args, context.raw);
 	if(!completed) {
 		fprintf(stderr, "Incomplete command.  Multi-line entry of commands not yet implemented.\n");
 		return COMERR_SYNTAX;

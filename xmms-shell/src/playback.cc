@@ -15,7 +15,7 @@ public:
         Session session = cnx.session;
 		bool p;
 
-        if(!session.playing() && !session.paused()) {
+        if(!session.is_playing() && !session.is_paused()) {
 			printf("Pause command has no effect because no playback is currently in progress.\n");
 			cnx.result_code = COMERR_NOEFFECT;
 			return;
@@ -48,17 +48,17 @@ public:
 	virtual void execute(CommandContext &cnx) const
 	{
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
 		int pos, offset, ch;
 
-        if(!session.playing()) {
+        if(!session.is_playing()) {
 			printf("Playback is not currently in progress.\n");
 			cnx.result_code = COMERR_NOEFFECT;
 			return;
 		}
 
         pos = playlist.position();
-        offset = session.playback_time();
+        offset = session.get_playback_time();
         session.stop();
 
 		printf("Press [ENTER] to resume: ");
@@ -104,8 +104,8 @@ public:
         Session session = cnx.session;
         bool p, q;
 
-        p = session.playing();
-        q = session.paused();
+        p = session.is_playing();
+        q = session.is_paused();
         session.play();
 		if(p) {
 			if(q) {
@@ -146,8 +146,8 @@ public:
         Session session = cnx.session;
         bool p, q;
 
-        p = session.playing();
-        q = session.paused();
+        p = session.is_playing();
+        q = session.is_paused();
         session.stop();
 		if(p) {
 			if(q) {
@@ -188,7 +188,7 @@ public:
 #if HAVE_XMMS_REMOTE_IS_REPEAT
 		bool status, newstatus;
 
-        status = session.repeat();
+        status = session.is_repeat();
 		if(cnx.args.size() < 2)
 			newstatus = !status;
 		else if(!strncasecmp("off", cnx.args[1].c_str(), cnx.args[1].size()))
@@ -243,7 +243,7 @@ public:
 #if HAVE_XMMS_REMOTE_IS_SHUFFLE
 		bool status, newstatus;
 
-		status = session.shuffle();
+		status = session.is_shuffle();
 		if(cnx.args.size() < 2)
 			newstatus = !status;
 		else if(!strncasecmp("off", cnx.args[1].c_str(), cnx.args[1].size()))

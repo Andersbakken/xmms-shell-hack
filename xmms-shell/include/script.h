@@ -13,12 +13,14 @@ using namespace std;
 
 class ScriptContext
 {
+public:
+    typedef map<string,string> Env;
+
 protected:
-    map<string,string> env;
+    Env env;
     Session sess;
 
 public:
-    typedef map<string,string> Env;
 
     ScriptContext();
     virtual ~ScriptContext();
@@ -53,7 +55,7 @@ class InteractiveContext : public ScriptContext
     class PromptFormatter : public Formatter
     {
     public:
-        PromptFormatter(const Session& session);
+        PromptFormatter(Session& session);
     };
 
 public:
@@ -81,6 +83,8 @@ public:
 
     virtual string get_line(void);
 };
+
+void script_init(void);
 
 #endif
 

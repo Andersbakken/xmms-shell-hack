@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <xmmsctrl.h>
 #include <map>
 #include <set>
@@ -40,36 +41,36 @@ public:
 	{
         Session session = context.session;
 		string title;
-		int leftVol, rightVol, pos, rate, freq, nch, t, i;
+		guint32 leftVol, rightVol, pos, rate, freq, nch, t, i;
 #if HAVE_XMMS_REMOTE_GET_EQ
 		float preamp;
         vector<float> bands;
 #endif
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
 
 		pos = playlist.position();
         title = playlist.title(pos);
-        if(session.playing()) {
-            session.playback_info(rate, freq, nch);
-            t = session.playback_time();
+        if(session.is_playing()) {
+            session.get_playback_info(rate, freq, nch);
+            t = session.get_playback_time();
 			printf("Playing: %s (%d kbps, %d hz, %d channels)\n", title.size() ? title.c_str() : "<no title>", rate / 1000, freq, nch);
 			printf("Time: %02d:%02d.%02d%s\n", t / 60000, (t / 1000) % 60, (t / 10) % 100,
-					session.paused() ? " (paused)" : "");
+					session.is_paused() ? " (paused)" : "");
 		} else
 			printf("Current song: %s\n", title.size() ? title.c_str() : "<no track selected>");
-        session.volume(leftVol, rightVol);
+        session.get_volume(leftVol, rightVol);
 #if HAVE_XMMS_REMOTE_IS_REPEAT
-		printf("Repeat mode: %s\n", session.repeat() ? "on" : "off");
+		printf("Repeat mode: %s\n", session.is_repeat() ? "on" : "off");
 #endif
 #if HAVE_XMMS_REMOTE_IS_SHUFFLE
-		printf("Shuffle mode: %s\n", session.shuffle() ? "on" : "off");
+		printf("Shuffle mode: %s\n", session.is_shuffle() ? "on" : "off");
 #endif
-		printf("Balance: %d\n", session.balance());
-		printf("Skin: %s\n", session.skin().c_str());
+		printf("Balance: %d\n", session.get_balance());
+		printf("Skin: %s\n", session.get_skin().c_str());
 		printf("Left volume: %d\n", leftVol);
 		printf("Right volume: %d\n", rightVol);
 #if HAVE_XMMS_REMOTE_GET_EQ
-        session.eq(preamp, bands);
+        session.get_eq(preamp, bands);
 		printf("Equalizer preamp: %.1f\n", preamp);
 		printf("Equalizer bands:");
 		for(i = 0; i < 10; i++)
@@ -307,7 +308,7 @@ public:
 
 	virtual void execute(CommandContext &context) const
 	{
-		int xver = context.session.version();
+		int xver = context.session.get_version();
 
 		printf("XMMS-Shell v%s by Logan Hanks <logan@vt.edu>\n", VERSION);
 		printf("Build info: %s %s with %s\n", __TIME__, __DATE__, __VERSION__);
@@ -371,6 +372,29 @@ public:
 	COM_RETURN("Always 0")
 };
 
+class ExecCommand : public Command
+{
+public:
+    ExecCommand(void) : Command("exec") { }
+    virtual ~ExecCommand() { }
+
+    virtual void execute(CommandContext& cnx) const
+    {
+        if(cnx.args.size() < 2) {
+            cnx.result_code = COMERR_SYNTAX;
+            return;
+        }
+        system(cnx.raw[1].c_str());
+    }
+
+    COM_SYNOPSIS("executes a system command")
+    COM_SYNTAX("EXEC <command>")
+    COM_DESCRIPTION(
+        "Passes its command-line to the system shell by executing /bin/sh -c <command>."
+    )
+    COM_RETURN("Always 0")
+};
+
 static Command *commands[] = {
 	new StatusCommand(),
 	new QuitCommand(),
@@ -378,6 +402,7 @@ static Command *commands[] = {
 	new VersionCommand(),
 	new EchoCommand(),
 	new XMMSQuitCommand(),
+    new ExecCommand(),
 };
 
 void general_init(void)

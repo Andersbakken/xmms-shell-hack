@@ -15,18 +15,18 @@ public:
 	virtual void execute(CommandContext &cnx) const
 	{
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
+        Playlist playlist = session.get_playlist();
 		int pos, offset;
 		bool paused;
 
 		cnx.result_code = 0;
-        if(!session.playing()) {
+        if(!session.is_playing()) {
 			return;
         }
 
-		paused = session.paused();
+		paused = session.is_paused();
         pos = playlist.position();
-        offset = session.playback_time();
+        offset = session.get_playback_time();
 
         session.stop();
         playlist.set_position(pos);
@@ -57,17 +57,17 @@ public:
 	virtual void execute(CommandContext &cnx) const
 	{
         Session session = cnx.session;
-        Playlist playlist = session.playlist();
-		gint target = 0, step = 1, delay = 100000, channel = 2, pos;
-		gint lv, rv, olv, orv, v;
+        Playlist playlist = session.get_playlist();
+		guint32 target = 0, step = 1, delay = 100000, channel = 2, pos;
+		guint32 lv, rv, olv, orv, v;
 		int x = 1, mult;
 	
-        if(!session.playing()) {
+        if(!session.is_playing()) {
 			fprintf(stderr, "No song is playing, ignoring fade request\n");
 			cnx.result_code = 0;
 			return;
 		}
-        if(session.paused()) {
+        if(session.is_paused()) {
 			fprintf(stderr, "Song is paused, ignoring fade request\n");
 			cnx.result_code = 0;
 			return;
@@ -85,7 +85,7 @@ public:
 		}
 	
         pos = playlist.position();
-        session.volume(lv, rv);
+        session.get_volume(lv, rv);
 	
 		if(lv > rv)
 			v = lv;

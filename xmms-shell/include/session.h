@@ -2,9 +2,13 @@
 
 #define _XMMS_SHELL_SESSION_H_
 
+#include "config.h"
 #include "exception.h"
 #include <string>
 #include <vector>
+#if HAVE_XMMS_SESSION_CONNECT
+#include <xmmssess.h>
+#endif
 
 using namespace std;
 
@@ -13,6 +17,29 @@ class Window;
 
 class Session
 {
+public:
+    typedef enum { STOPPED, PLAYING, PAUSED } PlayMode;
+
+private:
+#if HAVE_XMMS_SESSION_CONNECT
+    XMMSSession *xs;
+    guint32 version;
+    Session::PlayMode mode;
+    guint32 rate;
+    guint32 freq;
+    guint32 nch;
+    guint32 left_volume;
+    guint32 right_volume;
+    gint32 balance;
+    gboolean repeat;
+    gboolean shuffle;
+    string skin;
+    float preamp;
+    vector<float> bands;
+
+    void update_state(void);
+
+#endif
     int sid;
 
 public:
@@ -20,49 +47,52 @@ public:
     Session(const Session& session);
     ~Session();
 
-    Playlist playlist(void) const;
-    Window window(void) const;
-    int id(void) const;
+    Playlist get_playlist(void) const;
+    Window get_window(void) const;
+    guint32 get_id(void) const;
     void ensure_running(void) const;
-    bool running(void) const;
-    int version(void) const;
-    void stop(void) const;
-    bool playing(void) const;
-    void play(void) const;
-    bool paused(void) const;
-    void pause(bool value = true) const;
-    void unpause(void) const;
-    bool pause_toggle(void) const;
-    void playback_info(int& rate, int& freq, int& nch) const;
-    int playback_time(void) const;
-    void jump_to_time(int t) const;
-    void volume(int& left, int& right) const;
-    void set_volume(int left, int right) const;
-    int balance(void) const;
-    void set_balance(int value) const;
-#if HAVE_XMMS_REMOTE_IS_REPEAT
-    bool repeat(void) const;
-    void set_repeat(bool value = true) const;
-    bool repeat_toggle(void) const;
+    gboolean is_running(void) const;
+    guint32 get_version(void);
+    void stop(void);
+    gboolean is_playing(void);
+    void play(void);
+    gboolean is_paused(void);
+    void pause(gboolean value = true);
+    void unpause(void);
+    Session::PlayMode pause_toggle(void);
+    Session::PlayMode get_play_mode(void);
+    void get_playback_info(guint32& rate, guint32& freq, guint32& nch);
+    guint32 get_playback_time(void);
+    void jump_to_time(guint32 t);
+    void get_volume(guint32& left, guint32& right);
+    void set_volume(guint32 left, guint32 right);
+    gint32 get_balance(void);
+    void set_balance(gint32 value);
+#if HAVE_XMMS_REMOTE_IS_REPEAT || HAVE_XMMS_SESSION_CONNECT
+    gboolean is_repeat(void);
+    void set_repeat(gboolean value = true);
+    gboolean repeat_toggle(void);
 #else
-    void repeat_toggle(void) const;
+    void repeat_toggle(void);
 #endif
-#if HAVE_XMMS_REMOTE_IS_SHUFFLE
-    bool shuffle(void) const;
-    void set_shuffle(bool value = true) const;
-    bool shuffle_toggle(void) const;
+#if HAVE_XMMS_REMOTE_IS_SHUFFLE || HAVE_XMMS_SESSION_CONNECT
+    gboolean is_shuffle(void);
+    void set_shuffle(gboolean value = true);
+    gboolean shuffle_toggle(void);
 #else
-    void shuffle_toggle(void) const;
+    void shuffle_toggle(void);
 #endif
-    string skin(void) const;
-#if HAVE_XMMS_REMOTE_GET_EQ
-    void eq(float& preamp, vector<float>& bands) const;
-    float eq_preamp(void) const;
-    float eq_band(int band) const;
-    void set_eq_preamp(float value) const;
-    void set_eq_band(int band, float value) const;
+    string get_skin(void);
+#if HAVE_XMMS_REMOTE_GET_EQ || HAVE_XMMS_SESSION_CONNECT
+    void get_eq(float& preamp, vector<float>& bands);
+    float get_eq_preamp(void);
+    float get_eq_band(guint32 band);
+    const vector<float>& get_eq_bands(void);
+    void set_eq_preamp(float value);
+    void set_eq_bands(const vector<float>& bands);
+    void set_eq_band(guint32 band, float value);
 #endif
-    void quit(void) const;
+    void quit(void);
 };
 
 class XmmsNotRunningException : public Exception
@@ -71,6 +101,15 @@ public:
     XmmsNotRunningException(const Session& session);
     virtual ~XmmsNotRunningException();
 };
+
+#if HAVE_XMMS_SESSION_CONNECT
+class XmmsQueryFailureException : public Exception
+{
+public:
+    XmmsQueryFailureException(XMMSQueryResult result, const string& filename, int line);
+    virtual ~XmmsQueryFailureException();
+};
+#endif
 
 #endif
 

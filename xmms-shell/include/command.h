@@ -38,6 +38,7 @@ public:
 	//int session_id;
 	int result_code;
 	vector<string> args;
+    vector<string> raw;
 
 	//CommandContext(int _session_id) : quit(false), session_id(_session_id), result_code(0) { }
     //CommandContext(const Session& _session) : session(_session), quit(false), result_code(0) { }

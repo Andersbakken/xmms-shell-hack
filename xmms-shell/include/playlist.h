@@ -29,7 +29,7 @@ public:
     int next(void) const;
     int prev(void) const;
     void clear(void) const;
-    int load(vector<string>::const_iterator start, vector<string>::const_iterator end) const;
+    int load(vector<string>::const_iterator start, vector<string>::const_iterator end);
     void remove(int pos) const;
     int remove(int pos1, int pos2) const;
 };
