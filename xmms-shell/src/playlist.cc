@@ -210,13 +210,13 @@ public:
         }
         pos = playlist.position();
         if(list.size()) {
-            for(int i = digs = 1; i < list.size(); i *= 10, digs++);
-            for(int i = start; i < list.size() && (stop == -1 || i <= stop); i++)
+            for(int i = digs = 1; i < (int) list.size(); i *= 10, digs++);
+            for(int i = start; i < (int) list.size() && (stop == -1 || i <= stop); i++)
                 printf("%c%*d. %s\n", pos == i + 1 ? '*' : ' ', digs, i + 1, list[i].c_str());
         } else {
             printf("Playlist is empty\n");
         }
-        cnx.result_code = (stop != -1 && stop < list.size() ? stop + 1 : list.size()) - start;
+        cnx.result_code = (stop != -1 && stop < (int) list.size() ? stop + 1 : list.size()) - start;
     }
 
     COM_SYNOPSIS("display the playlist")
@@ -241,8 +241,10 @@ int Playlist::load(vector<string>::const_iterator start, vector<string>::const_i
     GList *list = 0;
     int n = 0;
 
-    for(vector<string>::const_iterator i = start; i != end; i++, n++) {
-        list = g_list_append(list, g_strdup(i->c_str()));
+    while(start != end) {
+        list = g_list_append(list, g_strdup(start->c_str()));
+        start++;
+        n++;
     }
     xmms_remote_playlist_add(session.id(), list);
     g_list_free(list);
@@ -264,7 +266,7 @@ public:
             cnx.result_code = COMERR_SYNTAX;
             return;
         }
-        for(int j = 0; j < 2; i++, j++);
+        i++;
         cnx.result_code = playlist.load(i, cnx.args.end());
         printf("Loaded %d file%s\n", cnx.result_code, cnx.result_code - 1 ? "s" : "");
     }
@@ -290,7 +292,6 @@ public:
         Session session = cnx.session;
         Playlist playlist = session.playlist();
         FILE *f;
-        int i, len;
         vector<string> list;
 
         if(cnx.args.size() < 2) {

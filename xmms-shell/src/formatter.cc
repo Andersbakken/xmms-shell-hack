@@ -26,7 +26,7 @@ string Formatter::expand(const string format) const
 {
     string result;
 
-    for(int i = 0; i < format.size(); i++) {
+    for(unsigned i = 0; i < format.size(); i++) {
         if(format[i] == '%') {
             result.append(values[(char) format[++i]]);
         } else {

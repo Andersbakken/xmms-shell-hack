@@ -1,6 +1,6 @@
 AC_INIT(Makefile.in)
 
-AM_INIT_AUTOMAKE(xmms-shell, 0.99.2)
+AM_INIT_AUTOMAKE(xmms-shell, 0.99.3)
 AM_CONFIG_HEADER(include/config.h)
 
 AC_CHECK_PROG(XMMS_CONFIG, xmms-config, yes, no)
@@ -50,5 +50,5 @@ AC_CHECK_FUNCS(xmms_remote_set_eq_band)
 #AC_SUBST(PACKAGE)
 #AC_SUBST(VERSION)
 
-AC_OUTPUT(Makefile include/Makefile src/Makefile)
+AC_OUTPUT(Makefile doc/Makefile include/Makefile src/Makefile)
 

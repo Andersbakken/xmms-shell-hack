@@ -9,6 +9,10 @@ XmmsNotRunningException::XmmsNotRunningException(const Session& session)
 {
 }
 
+XmmsNotRunningException::~XmmsNotRunningException()
+{
+}
+
 Session::Session(int id) : sid(id)
 {
 }

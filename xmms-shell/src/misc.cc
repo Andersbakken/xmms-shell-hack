@@ -62,7 +62,7 @@ public:
 		gint lv, rv, olv, orv, v;
 		int x = 1, mult;
 	
-        if(session.playing()) {
+        if(!session.playing()) {
 			fprintf(stderr, "No song is playing, ignoring fade request\n");
 			cnx.result_code = 0;
 			return;

@@ -1,3 +1,16 @@
+Wed Oct 23 00:11:03 UTC 2002  Logan Hanks  <logan@vt.edu>
+
+  * Fixed error in reimplementation of the LOAD command
+  * Fixed typo in reimplementation of the FADE command
+  * Added delay in command evaluation loop, so that state changes to XMMS
+    by XMMS-Shell commands can hopefully be reflected in the prompt
+    accurately, but unfortunately this does not work
+  * Fixed error in reimplementation of the WINDOW command
+  * Added doc subdirectory, moved man page and HTML help there
+  * Modified Makefiles so that documentation is included in the source
+    distribution
+  * Released as 0.99.3
+
 Mon Oct 21 22:44:49 UTC 2002  Logan Hanks  <logan@vt.edu>
 
   * Made changes to how script/interactive input is processed

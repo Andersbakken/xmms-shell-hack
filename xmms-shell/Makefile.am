@@ -1,4 +1,2 @@
-SUBDIRS = include src
-
-man_MANS = xmms-shell.1
+SUBDIRS = doc include src
 

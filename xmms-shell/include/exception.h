@@ -13,7 +13,7 @@ class Exception
 
 public:
     Exception(const string& type, const string& message = "");
-    ~Exception();
+    virtual ~Exception();
 
     virtual string to_string(void) const;
 };

@@ -56,6 +56,7 @@ static int eval_loop(int session_id, FILE *in)
             string line = context->get_line();
 
 		    retval = eval_command_string(context, line, quit, TRUE);
+            usleep(100);
         }
     } catch(EOFException ex) {
     }

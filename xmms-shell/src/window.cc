@@ -63,8 +63,8 @@ public:
 		}
 
         window.show_equalizer(status & 1);
-        window.show_equalizer((status >> 1) & 1);
-        window.show_equalizer((status >> 2) & 1);
+        window.show_main((status >> 1) & 1);
+        window.show_playlist((status >> 2) & 1);
 		cnx.result_code = status & 7;
 	}
 

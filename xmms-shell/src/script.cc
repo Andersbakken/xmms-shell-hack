@@ -159,6 +159,10 @@ StringContext::StringContext(const string& s) : str(s), end(false)
 {
 }
 
+StringContext::~StringContext()
+{
+}
+
 string StringContext::get_line(void)
 {
     if(end) {

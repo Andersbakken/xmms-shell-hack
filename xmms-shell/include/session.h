@@ -69,6 +69,7 @@ class XmmsNotRunningException : public Exception
 {
 public:
     XmmsNotRunningException(const Session& session);
+    virtual ~XmmsNotRunningException();
 };
 
 #endif

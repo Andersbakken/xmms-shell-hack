@@ -122,6 +122,7 @@ static char *filename_dequote(char *text, int quote_char)
 	return buf;
 }
 
+#if 0
 /* Filename quoting for completion. */
 /* A function to strip quotes that are not protected by backquotes.  It
  * allows single quotes to appear within double quotes, and vice versa.
@@ -160,35 +161,20 @@ static char * bash_dequote_filename (char *text, int quote_char)
 	*r = '\0';
 	return ret;
 }
+#endif
 
 char **command_completion(const char *text, int start, int end)
 {
 	int index;
 	char **argv;
-	const Command *com;
 	CompletionHelper helper;
 	char **completions, *str;
 	int ncompletions, scompletions;
 
 	argv = split_text(rl_line_buffer, start, end, &index);
-	/*
-	if(argv[0] == 0) {
-		free(argv);
-		return 0;
-	}
-	*/
 	if(index == 0)
 		helper = build_command_list;
 	else {
-		/*
-		com = command_lookup(argv[0]);
-		if(!com) {// && !com->completer) {
-			free_vector(argv);
-			//return 0;
-			goto filename_complete;
-		}
-		//helper = com->completer;
-		*/
 		free_vector(argv);
 		goto filename_complete;
 	}
@@ -208,7 +194,6 @@ char **command_completion(const char *text, int start, int end)
 	free_vector(argv);
 	if(!ncompletions) {
 		free(completions);
-		//return 0;
 		goto filename_complete;
 	}
 	completions[ncompletions] = 0;

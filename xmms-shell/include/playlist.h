@@ -40,7 +40,7 @@ class PlaylistPositionOutOfBoundsException : public Exception
 
 public:
     PlaylistPositionOutOfBoundsException(const Playlist& playlist, int position, int min_value = 1);
-    ~PlaylistPositionOutOfBoundsException();
+    virtual ~PlaylistPositionOutOfBoundsException();
 
     virtual string to_string(void) const;
 };

@@ -1,0 +1,301 @@
+<a name="comhelp_toc"><h3>List of Commands</h3>
+<ul>
+<li><b>General</b>
+<ul>
+<li><a href="#help">?</a>
+<li><a href="#echo">echo</a>
+<li><a href="#quit">exit</a>
+<li><a href="#fade">fade</a>
+<li><a href="#help">help</a>
+<li><a href="#quit">quit</a>
+<li><a href="#status">status</a>
+<li><a href="#version">version</a>
+<li><a href="#xmmsquit">xmmsexit</a>
+<li><a href="#xmmsquit">xmmsquit</a>
+</ul>
+<li><b>Playback</b>
+<ul>
+<li><a href="#fakepause">fakepause</a>
+<li><a href="#pause">pause</a>
+<li><a href="#play">play</a>
+<li><a href="#repeat">repeat</a>
+<li><a href="#shuffle">shuffle</a>
+<li><a href="#stop">stop</a>
+</ul>
+<li><b>Playlist</b>
+<ul>
+<li><a href="#previous">backward</a>
+<li><a href="#clear">clear</a>
+<li><a href="#currenttrack">current-track</a>
+<li><a href="#currenttrack">currenttrack</a>
+<li><a href="#next">forward</a>
+<li><a href="#jump">jump</a>
+<li><a href="#list">list</a>
+<li><a href="#load">load</a>
+<li><a href="#next">next</a>
+<li><a href="#previous">previous</a>
+<li><a href="#randomtrack">random-track</a>
+<li><a href="#randomtrack">randomtrack</a>
+<li><a href="#remove">remove</a>
+<li><a href="#resetdevice">resetdevice</a>
+<li><a href="#save">save</a>
+</ul>
+<li><b>Volume Control</b>
+<ul>
+<li><a href="#upvolume">+</a>
+<li><a href="#downvolume">-</a>
+<li><a href="#balance">balance</a>
+<li><a href="#band">band</a>
+<li><a href="#downvolume">downvolume</a>
+<li><a href="#preamp">preamp</a>
+<li><a href="#upvolume">upvolume</a>
+<li><a href="#volume">volume</a>
+</ul>
+<li><b>Window Control</b>
+<ul>
+<li><a href="#eject">eject</a>
+<li><a href="#preferences">preferences</a>
+<li><a href="#window">window</a>
+</ul>
+</ul>
+<dl>
+<dt><a name="balance"><a href="#comhelp_top">balance</a> - set or query balance level</dt>
+<dd>
+If &lt;value&gt; is given, the balance is set to that value.  The valid range is -100 through 100 inclusive (any given value will be coerced into this range).  A value of 0 specifies the same volume for both the left and right channels, while negative values imply a louder left channel and positive values imply a louder right channel.  If no &lt;value&gt; is specified, the current balance setting is displayed.
+<p>
+<b>Returns</b>: If a value is specified, that value is returned.  Otherwise the current balance level is returned.
+</dd>
+<p>
+<dt><a name="band"><a href="#comhelp_top">band</a> - view or set the value of equalizer bands</dt>
+<dd>
+The BAND command outputs or sets the value of an equalizer band.  If given no arguments, the BAND command outputs the current values of all 10 equalizer bands.  If only a band value is specified (a value from 0 through 9) then the value of that particular band is output.  Otherwise the second argument, which should be a decimal value between -20 and 20, is assigned to the given band.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="clear"><a href="#comhelp_top">clear</a> - clear the current playlist</dt>
+<dd>
+Clears all entries from the playlist.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="currenttrack"><a href="#comhelp_top">current-track</a> - display current track</dt>
+<dd>
+The CURRENT-TRACK command displays the name of the current track and its current position in the playlist.
+<p>
+<b>Alias</b>: currenttrack<br>
+<b>Returns</b>: The position of the current track (counting from 1)
+</dd>
+<p>
+<dt><a name="downvolume"><a href="#comhelp_top">downvolume</a> - decrease the volume in either or both channels</dt>
+<dd>
+If &lt;step&gt; is not given, it assumes a default value of 2.  If no channel is specified, the volume of both channels is decreased by &lt;step&gt;.  Otherwise the volume decrease is applied only to the given channel.
+<p>
+<b>Alias</b>: -<br>
+<b>Returns</b>: If no channel is specified, returns the average of the new volumes in the two channels.  Otherwise, when the left or right channel is specified, returns the new volume of that channel.
+</dd>
+<p>
+<dt><a name="echo"><a href="#comhelp_top">echo</a> - display a string</dt>
+<dd>
+Displays all of the given arguments as strings, separating each by a single space, and followed by a newline.  If no arguments are given, simply displays a newline.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="eject"><a href="#comhelp_top">eject</a> - cause XMMS to display its file load dialog</dt>
+<dd>
+Causes XMMS to display its file load dialog.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="fade"><a href="#comhelp_top">fade</a> - adjust volume to specified level over time</dt>
+<dd>
+The FADE command performs a simple fade effect on the currently playing track.  If no song is being played, the command has no effect.  Specifying either LEFT or RIGHT will cause the effect to be isolated to only the specified channel.  The [target] specifies at which volume the fade effect should end.  The volume is restored to its previous settings once the target has been reached.  The [stepsize] indicates by how much to change the volume at a time.  The [delay] specifies how long to wait (in microseconds) before decreasing or increasing the volume towards the target by the specified stepsize.  By default the effect is applied to both channels, with a target of 0, stepsize of 1, and delay of 100000.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="fakepause"><a href="#comhelp_top">fakepause</a> - pause XMMS and release the output device</dt>
+<dd>
+The FAKEPAUSE is similar to the PAUSE command in that it pauses playback.  However, FAKEPAUSE is an interactive command.  When you press [ENTER] at the prompt FAKEPAUSE provides, playback will resume where it left off.  The usefulness of this command is that it forces XMMS to release the output device until you unpause it.  Technically it does this by saving the current song and the position in it before executing the STOP command.  Then, when it unpauses, it jumps back to the saved position in the song and resumes playback.
+<p>
+<b>Returns</b>: If no playback is currently in progress, returns COMERR_NOEFFECT.  Otherwise returns 0.
+</dd>
+<p>
+<dt><a name="help"><a href="#comhelp_top">help</a> - list commands and show their usage</dt>
+<dd>
+Given no arguments, HELP displays a list of commands and a brief description for each. If a command name is given as the first argument, HELP will display the usage of that command and a more in-depth description.
+<p>
+<b>Alias</b>: ?<br>
+<b>Returns</b>: 127 if an argument is specified that does not correspond to any command, 0 otherwise
+</dd>
+<p>
+<dt><a name="jump"><a href="#comhelp_top">jump</a> - jump to a position in the playlist</dt>
+<dd>
+The JUMP command instructs XMMS to move to a given position in the playlist.  Positions are specified as numbers.  The first file in the playlist is position 1.  If XMMS is playing when the JUMP command is executed then playback will continue immediately on the new file.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="list"><a href="#comhelp_top">list</a> - display the playlist</dt>
+<dd>
+The PLAYLIST command lists all of the entries in XMMS's playlist.  If a single number is provided as an argument, the PLAYLIST command lists all entries beginning at the position specified by that number.  If a second number is specified as an argument, the PLAYLIST command will stop listing entries when it reaches that position in the playlist.  By default PLAYLIST will list the titles of songs in the playlist.  If [FILENAMES] is specified, filenames will be listed instead.
+<p>
+<b>Returns</b>: The number of playlist entries displayed
+</dd>
+<p>
+<dt><a name="load"><a href="#comhelp_top">load</a> - add music or playlist files to the playlist</dt>
+<dd>
+Attempts to load each of the filenames given as arguments.  If a file is a playlist file, the files specified within that playlist file are each appended to the playlist.  Otherwise the file itself is appended to the playlist.
+<p>
+<b>Returns</b>: The number of successfully loaded
+</dd>
+<p>
+<dt><a name="next"><a href="#comhelp_top">next</a> - advance forward in the playlist</dt>
+<dd>
+If [n] is not specified, it is 1 by default.  NEXT advances the playlist forward by n entries.  Whenever the end of the playlist is encountered during advancing, the beginning of the playlist is considered to be the next entry (hence the playlist is treated as circular).  If shuffle mode is enabled in XMMS, the parameter n is effectively ignored.
+<p>
+<b>Alias</b>: forward<br>
+<b>Returns</b>: The new position of the playlist
+</dd>
+<p>
+<dt><a name="pause"><a href="#comhelp_top">pause</a> - pause or unpause playback</dt>
+<dd>
+The PAUSE command behaves as a toggle.  If XMMS is currently paused, the PAUSE command will have it resume playback.  If XMMS is currently playing, the PAUSE command will cause it to pause.  If no song is currently playing, the PAUSE command will have no effect.
+<p>
+<b>Returns</b>: If no playback is currently in progress, returns COMERR_NOEFFECT.  Otherwise returns 0 if playback is unpaused as a result of this command, and 1 otherwise.
+</dd>
+<p>
+<dt><a name="play"><a href="#comhelp_top">play</a> - start or resume playback</dt>
+<dd>
+The PLAY command forces playback to begin or resume.  If a track is currently playing, this command has the effect of causing playback of the track to start over.  If playback is paused, PLAY resumes playback where it left off.  Otherwise playback begins at the beginning of the current track.
+<p>
+<b>Returns</b>: If playback was previously paused, 2 is returned.  If a track was already being played when this command was issued, 1 is returned.  Otherwise 0 is returned.
+</dd>
+<p>
+<dt><a name="preamp"><a href="#comhelp_top">preamp</a> - view or set the equalizer's preamp value</dt>
+<dd>
+The PREAMP command will output the equalizer's preamp value if no arguments are given.  Otherwise its argument, which should be a decimal value between -20 and 20, is assigned.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="preferences"><a href="#comhelp_top">preferences</a> - cause XMMS to display its preferences dialog</dt>
+<dd>
+Causes XMMS to display its preferences dialog.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="previous"><a href="#comhelp_top">previous</a> - advance backward in the playlist</dt>
+<dd>
+If [n] is not specified, it is 1 by default.  PREVIOUS advances the playlist backward by n entries.  Whenever the beginning of the playlist is encountered during advancing, the end of the playlist is considered to be the previous entry (hence the playlist is treated as circular).  If shuffle mode is enabled in XMMS, the parameter n is effectively ignored.
+<p>
+<b>Alias</b>: backward<br>
+<b>Returns</b>: The new position of the playlist
+</dd>
+<p>
+<dt><a name="quit"><a href="#comhelp_top">quit</a> - terminate the shell</dt>
+<dd>
+The QUIT command instructs XMMS-Shell to immediately exit with an exit code of 0.
+<p>
+<b>Alias</b>: exit<br>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="randomtrack"><a href="#comhelp_top">random-track</a> - jump to random track</dt>
+<dd>
+The RANDOM-TRACK command causes XMMS to jump to a random track in the playlist.  Its effect is the same as the JUMP command.  If the playlist contains fewer than two entries, this command has no effect.
+<p>
+<b>Alias</b>: randomtrack<br>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="remove"><a href="#comhelp_top">remove</a> - remove track(s) from the playlist</dt>
+<dd>
+The REMOVE command removes a track or range of tracks from the playlist.  The first parameter given specifies the position of the first track to remove.  If no second parameter is given, only the track at the given position is removed.  If the second parameter is given, and pos2 &gt;= pos1, then all tracks with positions between pos and pos2 inclusive are removed from the playlist.
+<p>
+<b>Returns</b>: The number of tracks removed from the playlist
+</dd>
+<p>
+<dt><a name="repeat"><a href="#comhelp_top">repeat</a> - set repeat mode</dt>
+<dd>
+Clears, sets, or toggles repeat mode.  If neither OFF nor ON is given, TOGGLE is assumed to be the default.
+<p>
+<b>Returns</b>: Returns 1 if repeat mode is turned on, 0 otherwise
+</dd>
+<p>
+<dt><a name="resetdevice"><a href="#comhelp_top">resetdevice</a> - force XMMS to reset the output device</dt>
+<dd>
+The RESETDEVICE command forces XMMS to reset the output device.  This is useful if you wish to apply new output device settings immediately without interrupting playback.  This is technically implemented in the same manner as the FAKEPAUSE command.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="save"><a href="#comhelp_top">save</a> - save playlist to file</dt>
+<dd>
+The SAVE command saves the playlist currently loaded by XMMS to a file of your choice.  The contents of the file will consist of the filenames of each of the files in the playlist, one per line.
+<p>
+<b>Returns</b>: The number of entries saved to the file
+</dd>
+<p>
+<dt><a name="shuffle"><a href="#comhelp_top">shuffle</a> - set shuffle mode</dt>
+<dd>
+Clears, sets, or toggles shuffle mode.  If neither OFF nor ON is given, TOGGLE is assumed to be the default.
+<p>
+<b>Returns</b>: Returns 1 if shuffle mode is turned on, 0 otherwise
+</dd>
+<p>
+<dt><a name="status"><a href="#comhelp_top">status</a> - display the current status of XMMS</dt>
+<dd>
+The STATUS command queries XMMS for general information, such as the current track, playback mode, and various other settings.
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="stop"><a href="#comhelp_top">stop</a> - stop playback</dt>
+<dd>
+The STOP command forces playback to stop.  If playback is subsequently resumed, it begins at the beginning of the current track.
+<p>
+<b>Returns</b>: If playback was previously paused, 2 is returned.  If a track was being played when this command was issued, 1 is returned.  Otherwise 0 is returned.
+</dd>
+<p>
+<dt><a name="upvolume"><a href="#comhelp_top">upvolume</a> - increase the volume in either or both channels</dt>
+<dd>
+If &lt;step&gt; is not given, it assumes a default value of 2.  If no channel is specified, the volume of both channels is increased by &lt;step&gt;.  Otherwise the volume increase is applied only to the given channel.
+<p>
+<b>Alias</b>: +<br>
+<b>Returns</b>: If no channel is specified, returns the average of the new volumes in the two channels.  Otherwise, when the left or right channel is specified, returns the new volume of that channel.
+</dd>
+<p>
+<dt><a name="version"><a href="#comhelp_top">version</a> - display XMMS-Shell and XMMS version information</dt>
+<dd>
+Displays version information regarding XMMS-Shell, and attempts to obtain and display version information regarding XMMS (the XMMS version number may or may not mean anything).
+<p>
+<b>Returns</b>: Always 0
+</dd>
+<p>
+<dt><a name="volume"><a href="#comhelp_top">volume</a> - set the volume in either or both channels to a given level</dt>
+<dd>
+The VOLUME command queries or sets the volume level of XMMS. If the &lt;value&gt; argument is given, then the volume will be set.  If not, a volume will be displayed and returned.  If a volume is given, it should be specified as an integer from 0 through 100 inclusive (any given value will be coerced into this range).  If [left] or [right] is given, only that channel is operated upon.  That is, if a channel is specified and no volume is given, the current volume setting for that channel is displayed and returned.  If a volume and channel are specified, the volume will only be applied to the given channel.  If a volume is given and no channel is specified, both channels will be set to the given volume.
+<p>
+<b>Returns</b>: If no parameters are given, returns the average of the volumes in the two channels.  If a value is given, that value is returned.  Otherwise, when the left or right channel is specified, returns the volume of that channel.  
+</dd>
+<p>
+<dt><a name="window"><a href="#comhelp_top">window</a> - show or hide XMMS windows</dt>
+<dd>
+The WINDOW command hides and shows XMMS windows.  The first argument must be the window to operate on (the main, playlist, or equalizer window, or all three) and the second argument must be a command (HIDE, SHOW, or TOGGLE).  The TOGGLE command will toggle the display of a window.
+<p>
+<b>Returns</b>: A 3-bit integer, the bits of which represent the display status of each window.  The least significant bit represents the equalizer window, the second bit the main window, and the third bit the playlist window.
+</dd>
+<p>
+<dt><a name="xmmsquit"><a href="#comhelp_top">xmmsquit</a> - force XMMS and XMMS-Shell to exit</dt>
+<dd>
+Forces XMMS to exit, followed by XMMS-Shell exiting.  If you don't want to kill XMMS, just use the QUIT command instead.
+<p>
+<b>Alias</b>: xmmsexit<br>
+<b>Returns</b>: Always 0
+</dd>
+<p>

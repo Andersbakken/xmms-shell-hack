@@ -21,7 +21,7 @@ public:
     typedef map<string,string> Env;
 
     ScriptContext();
-    ~ScriptContext();
+    virtual ~ScriptContext();
 
     const Session& session(void) const;
     void set_session(const Session& session);
@@ -43,7 +43,7 @@ class FileContext : public ScriptContext
 
 public:
     FileContext(FILE *f);
-    ~FileContext();
+    virtual ~FileContext();
 
     virtual string get_line(void);
 };
@@ -58,7 +58,7 @@ class InteractiveContext : public ScriptContext
 
 public:
     InteractiveContext();
-    ~InteractiveContext();
+    virtual ~InteractiveContext();
 
     virtual string get_line(void);
 };
@@ -67,6 +67,7 @@ class EOFException : public Exception
 {
 public:
     EOFException() : Exception("EOFException") { }
+    virtual ~EOFException() { }
 };
 
 class StringContext : public ScriptContext
@@ -76,6 +77,7 @@ class StringContext : public ScriptContext
 
 public:
     StringContext(const string& s);
+    virtual ~StringContext();
 
     virtual string get_line(void);
 };
