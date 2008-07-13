@@ -26,7 +26,7 @@ static gchar *stripwhite(gchar *line)
 static char *build_command_list(char **argv, int arg, int state)
 {
 	static int index;
-	char *com = argv[arg];
+	const char *com = argv[arg];
 	static char **commands;
 
 	if(!commands) {

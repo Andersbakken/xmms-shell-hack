@@ -5,7 +5,6 @@
 #include "session.h"
 
 #include <vector>
-#include <iterator>
 
 using namespace std;
 

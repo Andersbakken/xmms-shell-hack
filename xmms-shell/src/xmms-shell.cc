@@ -107,6 +107,7 @@ int main(int argc, char **argv)
 
 	if(do_expr) {
         ScriptContext *context = new StringContext(do_expr);
+        context->set_session(Session(session_id));
         string line = context->get_line();
         int quit;
 
