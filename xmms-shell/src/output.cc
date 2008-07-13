@@ -1,4 +1,4 @@
-#include <ctype.h>
+#include <cctype>
 #include "output.h"
 
 void output_indented(const char *text, int start, int indent, int max, FILE *f)

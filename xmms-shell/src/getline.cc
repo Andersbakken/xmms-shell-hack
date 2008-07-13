@@ -5,11 +5,11 @@
 
 #ifdef HAVE_LIBREADLINE
 
+#include "command.h"
 #include <stdlib.h>
-#include <ctype.h>
+#include <cctype>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "command.h"
 
 typedef char *(*CompletionHelper)(char **argv, int arg, int state);
 
