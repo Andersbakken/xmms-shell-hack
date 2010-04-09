@@ -8,6 +8,9 @@ DEPENDPATH += . include src
 INCLUDEPATH += . include /usr/include/xmms/
 LIBS += -lxmms
 QMAKE_CXXFLAGS += $$system(pkg-config --cflags glib)
+INSTALLS += target
+target.files = xmms-shell
+target.path = /usr/local/bin
 
 # Input
 HEADERS += include/command.h \
