@@ -3,6 +3,8 @@
 #include "config.h"
 #include "command.h"
 #include "window.h"
+#include <string.h>
+#include <strings.h>
 
 #define SECTION virtual const string get_section(void) const { return "Window Control"; }
 
@@ -20,7 +22,7 @@ public:
 			cnx.result_code = COMERR_SYNTAX;
 			return;
 		}
-		
+
 		if(!strncasecmp("hide", cnx.args[2].c_str(), cnx.args[2].size()))
 			command = 0;
 		else if(!strncasecmp("show", cnx.args[2].c_str(), cnx.args[2].size()))
@@ -31,7 +33,7 @@ public:
 			cnx.result_code = COMERR_SYNTAX;
 			return;
 		}
-		
+
 		if(!strncasecmp("all", cnx.args[1].c_str(), cnx.args[1].size()))
 			apply = 7;
 		else if(!strncasecmp("equalizer", cnx.args[1].c_str(), cnx.args[1].size()))
@@ -44,7 +46,7 @@ public:
 			cnx.result_code = COMERR_SYNTAX;
 			return;
 		}
-		
+
         status = window.equalizer() |
             (window.main() << 1) |
             (window.playlist() << 2);
@@ -88,7 +90,7 @@ class PreferencesCommand : public Command
 {
 public:
 	COM_STRUCT(PreferencesCommand, "preferences")
-	
+
 	virtual void execute(CommandContext &cnx) const
 	{
         cnx.session.get_window().preferences();
@@ -106,7 +108,7 @@ class EjectCommand : public Command
 {
 public:
 	COM_STRUCT(EjectCommand, "eject")
-	
+
 	virtual void execute(CommandContext &cnx) const
 	{
         cnx.session.get_window().eject();

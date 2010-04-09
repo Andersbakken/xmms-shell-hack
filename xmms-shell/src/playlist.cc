@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <cctype>
+#include <string.h>
+#include <strings.h>
 #include <xmmsctrl.h>
 #include "config.h"
 #include "command.h"
@@ -159,7 +161,7 @@ class ClearCommand : public Command
 {
 public:
     COM_STRUCT(ClearCommand, "clear")
-    
+
     virtual void execute(CommandContext &cnx) const
     {
         cnx.session.get_playlist().clear();
@@ -176,7 +178,7 @@ class ListCommand : public Command
 {
 public:
     COM_STRUCT(ListCommand, "list")
-    
+
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
@@ -255,7 +257,7 @@ class LoadCommand : public Command
 {
 public:
     COM_STRUCT(LoadCommand, "load")
-    
+
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
@@ -286,7 +288,7 @@ class SaveCommand : public Command
 {
 public:
     COM_STRUCT(SaveCommand, "save")
-    
+
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;
@@ -331,7 +333,7 @@ public:
     {
         add_alias("randomtrack");
     }
-    
+
     virtual void execute(CommandContext &cnx) const
     {
         Session session = cnx.session;

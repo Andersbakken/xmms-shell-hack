@@ -3,6 +3,9 @@
 #include <errno.h>
 #include <cctype>
 #include <xmmsctrl.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
 #include "command.h"
 
 #define SECTION virtual const string get_section(void) const { return "Playlist"; }
@@ -11,7 +14,7 @@ class ResetDeviceCommand : public Command
 {
 public:
 	COM_STRUCT(ResetDeviceCommand, "resetdevice")
-	
+
 	virtual void execute(CommandContext &cnx) const
 	{
         Session session = cnx.session;
@@ -61,7 +64,7 @@ public:
 		gint32 target = 0, step = 1, delay = 100000, channel = 2, pos;
 		gint32 lv, rv, olv, orv, v;
 		int x = 1, mult;
-	
+
         if(!session.is_playing()) {
 			fprintf(stderr, "No song is playing, ignoring fade request\n");
 			cnx.result_code = 0;
@@ -73,7 +76,7 @@ public:
 			return;
 		}
 		cnx.result_code = 1;
-	
+
 		if(cnx.args.size() > 1) {
 			if(!strncasecmp("left", cnx.args[1].c_str(), cnx.args[1].length())) {
 				channel = 0;
@@ -83,18 +86,18 @@ public:
 				x++;
 			}
 		}
-	
+
         pos = playlist.position();
         session.get_volume(lv, rv);
-	
+
 		if(lv > rv)
 			v = lv;
 		else
 			v = rv;
-	
+
 		olv = lv;
 		orv = rv;
-		
+
 		if(cnx.args.size() - x > 0) {
 			if(!isdigit(cnx.args[x][0])) {
 				cnx.result_code = COMERR_SYNTAX;

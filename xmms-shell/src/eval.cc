@@ -2,6 +2,7 @@
 #include "eval.h"
 #include "command.h"
 #include <stdio.h>
+#include <string.h>
 #include <cctype>
 #include <glib.h>
 

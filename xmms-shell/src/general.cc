@@ -3,6 +3,7 @@
 #include <xmmsctrl.h>
 #include <map>
 #include <set>
+#include <string.h>
 #include <cctype>
 #include "config.h"
 #include "command.h"
@@ -151,7 +152,7 @@ class HelpCommand : public Command
 		set<string> sections;
 		map<string, map<string, const Command *> > sl;
 		string prev;
-		
+
 		for(p = cl.begin(); p != cl.end(); p++)
 			sections.insert((*p).get_command()->get_section());
 		for(set<string>::const_iterator it = sections.begin(); it != sections.end(); it++)
@@ -184,7 +185,7 @@ class HelpCommand : public Command
 		printf("</ul>\n");
 
 		map<string, const Command *> sc;
-		
+
 		for(p = cl.begin(); p != cl.end(); p++)
 			sc.insert(pair<string, const Command *>((*p).get_command()->get_primary_name(), (*p).get_command()));
 		printf("<dl>\n");
@@ -277,7 +278,7 @@ public:
 		printf("\n");
 		if(com->get_aliases().size() > 0) {
 			vector<string>::const_iterator p;
-			
+
 			printf("Aliases:");
 			for(p = com->get_aliases().begin(); p != com->get_aliases().end(); p++)
 				printf(" %s", (*p).c_str());
@@ -309,6 +310,7 @@ public:
 	virtual void execute(CommandContext &context) const
 	{
 		int xver = context.session.get_version();
+                static const char *VERSION = "0.99";
 
 		printf("XMMS-Shell v%s by Logan Hanks <logan@vt.edu>\n", VERSION);
 		printf("Build info: %s %s with %s\n", __TIME__, __DATE__, __VERSION__);

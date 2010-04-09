@@ -1,5 +1,6 @@
 #include "config.h"
 #include "command.h"
+#include <strings.h>
 #include <algorithm>
 
 static vector<CommandReference> commands;
