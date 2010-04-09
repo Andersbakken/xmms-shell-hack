@@ -5,8 +5,9 @@
 TEMPLATE = app
 TARGET =
 DEPENDPATH += . include src
-INCLUDEPATH += . include /usr/include/glib-1.2 /usr/lib/glib/include /usr/include/xmms/
+INCLUDEPATH += . include /usr/include/xmms/
 LIBS += -lxmms
+QMAKE_CXXFLAGS += $$system(pkg-config --cflags glib)
 
 # Input
 HEADERS += include/command.h \
@@ -40,7 +41,6 @@ SOURCES += src/command.cc \
            src/volume.cc \
            src/window.cc \
            src/xmms-shell.cc
-CONFIG += debug
 unix {
     MOC_DIR=.moc
     UI_DIR=.ui
